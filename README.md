@@ -43,12 +43,15 @@ npm install
 ```bash
 # Tạo prisma client
 npm run prisma:generate
+# hoặc npx prisma generate
 
 # Đẩy schema vào database (tạo các bảng)
 npm run prisma:dbpush
+# hoặc npx prisma db push
 
 # Xem database
-npx prisma studio
+npm run prisma:studio
+# hoặc npx prisma studio
 ```
 
 **Bước 4:** Chạy server backend (môi trường dev):
