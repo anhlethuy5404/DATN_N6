@@ -1,5 +1,5 @@
 import { type Request, type Response, type NextFunction } from "express";
-import { CloudinaryService } from "../service/cloudinary.service.js";
+import { CloudinaryService } from "../../infrastructure/external/cloudinary/cloudinary.service.js";
 import { sendSuccess, sendError } from "../utils/response.js";
 
 export class UploadController {

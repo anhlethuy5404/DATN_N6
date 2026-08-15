@@ -1,5 +1,5 @@
 import { type UploadApiResponse, type UploadApiErrorResponse } from "cloudinary";
-import { cloudinary } from "../config/cloudinary.js";
+import { cloudinary } from "./config.js";
 import fs from "fs";
 
 export interface UploadResult {

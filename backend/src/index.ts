@@ -1,6 +1,6 @@
 import express, { type Express } from 'express';
-import { prisma } from './config/database.js';
-import uploadRouter from './routes/upload.route.js';
+import { prisma } from './shared/infrastructure/database/config.js';
+import uploadRouter from './shared/http/routes/upload.route.js';
 
 const PORT = Number(process.env.PORT) || 3000;
 const app: Express = express();
