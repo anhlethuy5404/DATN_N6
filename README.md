@@ -95,3 +95,7 @@ npm start
 - **Máy ảo (Emulator):** Bấm phím `a` trên terminal để chạy trên Android Emulator hoặc `i` để chạy trên iOS Simulator (yêu cầu máy Mac và Xcode)
 
 ---
+
+## Hướng dẫn chi tiết
+
+- [Backend - DDD & Clean Architecture Guide](backend/README.md)
