@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { UploadController } from "../controller/upload.controller.js";
+import { UploadController } from "../controller/cloudinary-upload.controller.js";
 import { CloudinaryService } from "../../infrastructure/external/cloudinary/cloudinary.service.js";
-import upload from "../middleware/upload.middleware.js";
+import upload from "../middleware/cloudinary-upload.middleware.js";
 
 const router = Router();
 const uploadController = new UploadController(new CloudinaryService());

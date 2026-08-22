@@ -40,11 +40,9 @@
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true,
-    // Path aliases for cleaner imports
-    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "@utils/*": ["src/shared/http/utils/*"]
+      "@utils/*": ["./src/shared/http/utils/*"]
     }
   },
   "include": ["src/**/*", "*.ts"],
