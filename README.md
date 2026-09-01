@@ -98,4 +98,16 @@ npm start
 
 ## Hướng dẫn chi tiết
 
+- [Frontend Web - Sàn Giao Dịch, Đấu Giá & Trao Đổi Đồ Cũ Guide](frontendWeb/README.md)
 - [Backend - DDD & Clean Architecture Guide](backend/README.md)
+
+---
+
+## Bảng Cổng Dịch Vụ Mặc Định (Port Mapping)
+
+| Dịch vụ | Thư mục | Port Mặc định | Ghi chú |
+| :--- | :--- | :--- | :--- |
+| **Frontend Web** | `frontendWeb/` | `5173` | Chạy trên Vite (`http://localhost:5173`). Đổi qua `VITE_PORT` trong `.env`. |
+| **Backend API** | `backend/` | `3000` | Chạy trên Express (`http://localhost:3000`). Đổi qua `PORT` trong `.env`. |
+| **Prisma Studio** | `backend/` | `5555` | Quản trị CSDL giao diện Web (`http://localhost:5555`). |
+| **Frontend App** | `frontendApp/` | `8081` | Metro Bundler cho Expo Go / React Native. |
