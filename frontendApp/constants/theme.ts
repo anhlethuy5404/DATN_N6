@@ -1,41 +1,58 @@
-/**
- * Below are the colors that are used in the app. The colors are defined in the light and dark mode.
- * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
- */
-
 import { Platform } from 'react-native';
 
-const tintColorLight = '#0a7ea4';
-const tintColorDark = '#fff';
+const tintColorLight = '#c5573e'; // Mộc Terracotta
+const tintColorDark = '#e07a63';
 
 export const Colors = {
   light: {
-    text: '#11181C',
-    background: '#fff',
+    text: '#292724',
+    textMuted: '#7c776e',
+    background: '#f8f7f3',
+    card: '#ffffff',
     tint: tintColorLight,
-    icon: '#687076',
-    tabIconDefault: '#687076',
+    icon: '#7c776e',
+    tabIconDefault: '#9c978d',
     tabIconSelected: tintColorLight,
+    border: '#e6decb',
+    primary: '#c5573e',
+    primaryLight: '#faece8',
+    primaryDark: '#a8452e',
+    success: '#2f6844',
+    successLight: '#eaf3ed',
+    warning: '#b26a1b',
+    warningLight: '#fcf4e8',
+    danger: '#d32f2f',
+    dangerLight: '#fde8e8',
+    sandDark: '#ebe4d3',
   },
   dark: {
-    text: '#ECEDEE',
-    background: '#151718',
+    text: '#f8f7f3',
+    textMuted: '#a8a296',
+    background: '#1a1917',
+    card: '#292724',
     tint: tintColorDark,
-    icon: '#9BA1A6',
-    tabIconDefault: '#9BA1A6',
+    icon: '#a8a296',
+    tabIconDefault: '#6e6a62',
     tabIconSelected: tintColorDark,
+    border: '#3d3933',
+    primary: '#e07a63',
+    primaryLight: '#3a2622',
+    primaryDark: '#c5573e',
+    success: '#4caf50',
+    successLight: '#1e3323',
+    warning: '#ffb74d',
+    warningLight: '#382a15',
+    danger: '#ef5350',
+    dangerLight: '#3d1c1c',
+    sandDark: '#36332d',
   },
 };
 
 export const Fonts = Platform.select({
   ios: {
-    /** iOS `UIFontDescriptorSystemDesignDefault` */
     sans: 'system-ui',
-    /** iOS `UIFontDescriptorSystemDesignSerif` */
     serif: 'ui-serif',
-    /** iOS `UIFontDescriptorSystemDesignRounded` */
     rounded: 'ui-rounded',
-    /** iOS `UIFontDescriptorSystemDesignMonospaced` */
     mono: 'ui-monospace',
   },
   default: {
@@ -45,9 +62,9 @@ export const Fonts = Platform.select({
     mono: 'monospace',
   },
   web: {
-    sans: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
-    serif: "Georgia, 'Times New Roman', serif",
-    rounded: "'SF Pro Rounded', 'Hiragino Maru Gothic ProN', Meiryo, 'MS PGothic', sans-serif",
-    mono: "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
+    sans: "'DM Sans', system-ui, -apple-system, sans-serif",
+    serif: "'Fraunces', Georgia, serif",
+    rounded: "'DM Sans', sans-serif",
+    mono: "monospace",
   },
 });
