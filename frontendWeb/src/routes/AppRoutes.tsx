@@ -7,6 +7,10 @@ import { ProductListPage } from '../pages/products/ProductListPage'
 import { ProductDetailPage } from '../pages/products/ProductDetailPage'
 import { CreateProductPage } from '../pages/products/CreateProductPage'
 import { EditProductPage } from '../pages/products/EditProductPage'
+import { MyProductsPage } from '../pages/products/MyProductsPage'
+
+// Safe Meetup Spots
+import { SafeSpotsPage } from '../pages/safespot/SafeSpotsPage'
 
 // Auctions
 import { AuctionListPage } from '../pages/auctions/AuctionListPage'
@@ -14,6 +18,7 @@ import { AuctionDetailPage } from '../pages/auctions/AuctionDetailPage'
 import { MyBidsPage } from '../pages/auctions/MyBidsPage'
 
 // Pass & Barter
+import { BarterPassPage } from '../pages/pass/BarterPassPage'
 import { MyPassApplicationsPage } from '../pages/pass/MyPassApplicationsPage'
 
 // Orders & Checkout
@@ -81,6 +86,10 @@ export const AppRoutes: React.FC = () => {
       <Route path="/products/create" element={<CreateProductPage />} />
       <Route path="/products/:id" element={<ProductDetailPage />} />
       <Route path="/products/:id/edit" element={<EditProductPage />} />
+      <Route path="/products/my-listings" element={<MyProductsPage />} />
+
+      {/* Safe Spots Network */}
+      <Route path="/safespots" element={<SafeSpotsPage />} />
 
       {/* Auctions */}
       <Route path="/auctions" element={<AuctionListPage />} />
@@ -88,7 +97,7 @@ export const AppRoutes: React.FC = () => {
       <Route path="/auctions/my-bids" element={<MyBidsPage />} />
 
       {/* Barter & Pass */}
-      <Route path="/pass" element={<MyPassApplicationsPage />} />
+      <Route path="/pass" element={<BarterPassPage />} />
       <Route path="/pass/my-applications" element={<MyPassApplicationsPage />} />
 
       {/* Cart & Checkout */}

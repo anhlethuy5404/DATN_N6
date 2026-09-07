@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import {
   ShieldCheck,
   CreditCard,
@@ -7,26 +7,34 @@ import {
   MapPin,
   Truck,
   Check,
-  ChevronRight
+  ChevronRight,
+  ExternalLink
 } from 'lucide-react'
 import { MainLayout } from '../../layouts/MainLayout'
-import { formatVND, mockSafeSpots } from '../../mock/mockData'
+import { formatVND, mockSafeSpots, mockProducts, mockWallet } from '../../mock/mockData'
 
 export const CheckoutPage: React.FC = () => {
   const navigate = useNavigate()
-  const [deliveryType, setDeliveryType] = useState<'SHIPPING' | 'MEETUP'>('SHIPPING')
+  const [searchParams] = useSearchParams()
+  const productId = searchParams.get('productId')
+  const qty = parseInt(searchParams.get('qty') || '1')
+  const safeSpotParam = searchParams.get('safeSpot')
+
+  const product = mockProducts.find((p) => p.id === productId) || mockProducts[0]
+  const productPrice = (product.salePrice || product.currentPrice || 15500000) * qty
+
+  const [deliveryType, setDeliveryType] = useState<'SHIPPING' | 'MEETUP'>(safeSpotParam ? 'MEETUP' : 'SHIPPING')
   const [paymentMethod, setPaymentMethod] = useState<'VNPAY' | 'WALLET'>('VNPAY')
-  const [selectedSpot, setSelectedSpot] = useState(mockSafeSpots[0].id)
+  const [selectedSpot, setSelectedSpot] = useState(safeSpotParam || mockSafeSpots[0].id)
   const [processing, setProcessing] = useState(false)
 
-  const productPrice = 15500000
   const shippingFee = deliveryType === 'SHIPPING' ? 35000 : 0
   const total = productPrice + shippingFee
 
   const handleConfirmEscrow = () => {
     setProcessing(true)
     setTimeout(() => {
-      navigate('/checkout/payment-result?orderCode=MOC-2048&status=SUCCESS')
+      navigate(`/checkout/payment-result?orderCode=NEX-${Date.now().toString().slice(-4)}&status=SUCCESS&productId=${product.id}`)
     }, 1000)
   }
 
@@ -109,20 +117,24 @@ export const CheckoutPage: React.FC = () => {
 
               {deliveryType === 'MEETUP' && (
                 <div style={{ marginTop: 14, padding: 14, background: '#fdf9f4', border: '1px solid #ecdcd0', borderRadius: 6 }}>
-                  <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 12 }}>
-                    <b>Chọn điểm hẹn giao dịch an toàn (Domain 6):</b>
-                    <select
-                      value={selectedSpot}
-                      onChange={(e) => setSelectedSpot(e.target.value)}
-                      style={{ border: '1px solid var(--border)', background: 'var(--card)', padding: 10, borderRadius: 6 }}
-                    >
-                      {mockSafeSpots.map((spot) => (
-                        <option key={spot.id} value={spot.id}>
-                          {spot.name} - {spot.address}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                    <b style={{ fontSize: 12 }}>Chọn điểm hẹn giao dịch an toàn:</b>
+                    <Link to="/safespots" target="_blank" className="text-xs text-[#004AC6] font-semibold hover:underline flex items-center gap-1">
+                      <span>Xem mạng lưới Safe Spot</span>
+                      <ExternalLink size={12} />
+                    </Link>
+                  </div>
+                  <select
+                    value={selectedSpot}
+                    onChange={(e) => setSelectedSpot(e.target.value)}
+                    style={{ width: '100%', border: '1px solid var(--border)', background: 'var(--card)', padding: 10, borderRadius: 6, fontSize: 13 }}
+                  >
+                    {mockSafeSpots.map((spot) => (
+                      <option key={spot.id} value={spot.id}>
+                        {spot.name} - {spot.address}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               )}
             </div>
@@ -201,16 +213,16 @@ export const CheckoutPage: React.FC = () => {
 
             <div style={{ display: 'flex', gap: 12, paddingBottom: 16, borderBottom: '1px solid var(--border)' }}>
               <img
-                src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=900&q=85"
-                alt="Fujifilm"
-                style={{ width: 64, height: 64, objectFit: 'cover', borderRadius: 6 }}
+                src={product.primaryImage}
+                alt={product.title}
+                style={{ width: 64, height: 64, objectFit: 'cover', borderRadius: 8, border: '1px solid var(--border)' }}
               />
-              <div style={{ flex: 1 }}>
-                <p style={{ fontSize: 13, fontWeight: 600, margin: '0 0 4px' }}>
-                  Máy ảnh Fujifilm X-T30 II
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <p style={{ fontSize: 13, fontWeight: 700, margin: '0 0 4px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  {product.title}
                 </p>
-                <small style={{ color: 'var(--muted-foreground)' }}>Số lượng: 1</small>
-                <div style={{ color: 'var(--primary)', fontWeight: 700, fontSize: 14 }}>
+                <small style={{ color: 'var(--muted-foreground)' }}>Số lượng: {qty} · Người bán: {product.sellerName}</small>
+                <div style={{ color: 'var(--primary)', fontWeight: 800, fontSize: 14, marginTop: 2 }}>
                   {formatVND(productPrice)}
                 </div>
               </div>

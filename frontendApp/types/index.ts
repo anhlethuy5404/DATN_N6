@@ -222,6 +222,9 @@ export interface SafeMeetupSpot {
   spotType: SpotType
   latitude?: number
   longitude?: number
+  imageUrl?: string
+  openingHours?: string
+  distanceKm?: number
 }
 
 export type OrderStatus =

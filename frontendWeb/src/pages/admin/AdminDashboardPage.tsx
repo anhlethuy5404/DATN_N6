@@ -29,10 +29,10 @@ export const AdminDashboardPage: React.FC = () => {
     { name: 'Đấu giá (AUCTION)', value: 24 },
     { name: 'Trao đổi & Cho tặng (BARTER/PASS)', value: 14 }
   ]
-  const COLORS = ['#c5573e', '#d8a66b', '#52915d']
+  const COLORS = ['#004AC6', '#712AE2', '#007D55']
 
   return (
-    <AdminLayout title="Tổng Quan Hệ Thống Nền Tảng (Admin)">
+    <AdminLayout title="Tổng Quan Hệ Thống Nền Tảng Nexus (Admin)">
       {/* Metric Cards */}
       <div className="admin-stat-grid">
         <div className="admin-stat accent">

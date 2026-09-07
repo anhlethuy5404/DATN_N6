@@ -25,17 +25,7 @@ export default function ProductDetailScreen() {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
 
   const handleBuyNow = () => {
-    Alert.alert(
-      'Xác nhận đặt mua (Mộc Escrow)',
-      `Bạn sẽ đặt mua món đồ này với giá ${formatVND(product.salePrice || 0)}. Tiền sẽ được giữ an toàn trong quỹ Escrow cho đến khi bạn nhận hàng trực tiếp và quét mã QR xác nhận!`,
-      [
-        { text: 'Hủy', style: 'cancel' },
-        {
-          text: 'Thanh toán cọc',
-          onPress: () => router.push('/order/ORD-2048' as any),
-        },
-      ]
-    )
+    router.push(`/checkout?id=${product.id}` as any)
   }
 
   const handleChat = () => {
@@ -170,8 +160,15 @@ export default function ProductDetailScreen() {
         </View>
 
         {/* Suggested Safe Spot */}
-        <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.border }]}>
-          <Text style={[styles.subHeading, { color: theme.text }]}>Điểm hẹn an toàn đề xuất</Text>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={() => router.push('/safespot' as any)}
+          style={[styles.card, { backgroundColor: theme.card, borderColor: theme.border }]}
+        >
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+            <Text style={[styles.subHeading, { color: theme.text }]}>Điểm hẹn an toàn đề xuất</Text>
+            <Text style={{ fontSize: 11, color: theme.primary, fontWeight: '700' }}>Xem tất cả &gt;</Text>
+          </View>
           <View style={styles.spotRow}>
             <Ionicons name="cafe-outline" size={24} color={theme.primary} style={{ marginRight: 10 }} />
             <View style={{ flex: 1 }}>
@@ -179,7 +176,7 @@ export default function ProductDetailScreen() {
               <Text style={[styles.spotAddress, { color: theme.textMuted }]}>{mockSafeSpots[0].address}</Text>
             </View>
           </View>
-        </View>
+        </TouchableOpacity>
       </ScrollView>
 
       {/* Bottom CTA Bar */}
@@ -189,7 +186,14 @@ export default function ProductDetailScreen() {
           <Text style={[styles.chatBtnText, { color: theme.primary }]}>Đàm phán</Text>
         </TouchableOpacity>
 
-        {product.transactionType === 'PASS' ? (
+        {product.transactionType === 'AUCTION' ? (
+          <TouchableOpacity
+            style={[styles.primaryActionBtn, { backgroundColor: '#ba1a1a' }]}
+            onPress={() => router.push(`/auction/${product.id}` as any)}
+          >
+            <Text style={styles.primaryActionText}>VÀO ĐẤU GIÁ TRỰC TIẾP</Text>
+          </TouchableOpacity>
+        ) : product.transactionType === 'PASS' ? (
           <TouchableOpacity
             style={[styles.primaryActionBtn, { backgroundColor: theme.warning }]}
             onPress={() => Alert.alert('Đăng ký nhận đồ', 'Đơn xin nhận đồ của bạn đã được gửi đến chủ nhân!')}
@@ -199,7 +203,7 @@ export default function ProductDetailScreen() {
         ) : product.transactionType === 'BARTER' ? (
           <TouchableOpacity
             style={[styles.primaryActionBtn, { backgroundColor: theme.success }]}
-            onPress={handleChat}
+            onPress={() => router.push('/barter/offer' as any)}
           >
             <Text style={styles.primaryActionText}>ĐỀ XUẤT ĐỔI ĐỒ</Text>
           </TouchableOpacity>

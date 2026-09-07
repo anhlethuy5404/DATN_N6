@@ -26,13 +26,13 @@ export const ProductCard = ({ product }: ProductCardProps) => {
   const getTypeBadge = () => {
     switch (product.transactionType) {
       case 'AUCTION':
-        return { label: 'Đấu giá', bg: '#faece8', text: '#c5573e' }
+        return { label: 'Đấu giá', bg: '#dce9ff', text: '#004ac6' }
       case 'BARTER':
-        return { label: 'Trao đổi', bg: '#eaf3ed', text: '#2f6844' }
+        return { label: 'Trao đổi', bg: '#eedcff', text: '#712ae2' }
       case 'PASS':
-        return { label: 'Tặng / Pass', bg: '#fcf4e8', text: '#b26a1b' }
+        return { label: 'Tặng / Pass', bg: '#d1f4e0', text: '#007d55' }
       default:
-        return { label: 'Bán lẻ', bg: '#f0f3f6', text: '#395368' }
+        return { label: 'Bán lẻ', bg: '#f0f3f8', text: '#0b1c30' }
     }
   }
 

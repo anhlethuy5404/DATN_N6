@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Check } from 'lucide-react'
+import { CheckCircle2, Mail, ArrowLeft, ArrowRight } from 'lucide-react'
 import { AuthLayout } from '../../layouts/AuthLayout'
 
 export const ForgotPasswordPage: React.FC = () => {
@@ -9,51 +9,76 @@ export const ForgotPasswordPage: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    setSent(true)
+    if (email.trim()) {
+      setSent(true)
+    }
   }
 
   return (
     <AuthLayout>
-      <div style={{ textAlign: 'center', marginBottom: 20 }}>
-        <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: 26, margin: '0 0 6px' }}>
-          Quên Mật Khẩu
-        </h1>
-        <p style={{ color: 'var(--muted-foreground)', fontSize: 13, margin: 0 }}>
-          Nhập email đăng ký để nhận liên kết đặt lại mật khẩu
+      <div className="text-left mb-6">
+        <h2 className="text-2xl font-bold text-[#0B1C30] tracking-tight">
+          Reset Password
+        </h2>
+        <p className="text-sm text-[#434655] mt-1">
+          Enter your registered email address and we will send you instructions to reset your password.
         </p>
       </div>
 
       {sent ? (
-        <div style={{ textAlign: 'center', padding: '16px 0' }}>
-          <Check size={40} color="#356b41" style={{ margin: '0 auto 12px' }} />
-          <p style={{ fontSize: 13, color: 'var(--muted-foreground)' }}>
-            Liên kết khôi phục đã được gửi vào <strong>{email}</strong>. Vui lòng kiểm tra hộp thư của bạn.
-          </p>
-          <Link to="/auth/login" className="primary-button full-button" style={{ marginTop: 16 }}>
-            Quay lại Đăng nhập
+        <div className="text-center py-6 space-y-4">
+          <div className="w-14 h-14 mx-auto rounded-full bg-[#EAF3ED] flex items-center justify-center">
+            <CheckCircle2 className="w-8 h-8 text-[#007D55]" />
+          </div>
+          <div>
+            <h3 className="text-base font-bold text-[#0B1C30]">Instructions Sent</h3>
+            <p className="text-sm text-[#434655] mt-2">
+              We've dispatched a secure reset link to <strong className="text-[#0B1C30]">{email}</strong>. Please check your inbox and spam folder.
+            </p>
+          </div>
+          <Link
+            to="/auth/login"
+            className="inline-flex items-center justify-center w-full py-3 px-4 bg-[#004AC6] hover:bg-[#003899] text-white font-semibold rounded-xl text-sm transition-all mt-4"
+          >
+            Back to Sign In
           </Link>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-          <label style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 13 }}>
-            Email đăng ký
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              placeholder="name@example.com"
-              style={{ border: '1px solid var(--border)', padding: '10px 12px', borderRadius: 6 }}
-            />
-          </label>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-xs font-semibold text-[#0B1C30] uppercase tracking-wider mb-1.5">
+              Account Email
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#737686]">
+                <Mail className="w-4 h-4" />
+              </div>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                placeholder="collector@example.com"
+                className="w-full pl-10 pr-4 py-2.5 bg-white rounded-xl border border-[#C3C6D7] text-sm text-[#0B1C30] placeholder-[#737686] focus:outline-none focus:ring-2 focus:ring-[#004AC6] focus:border-transparent transition-all shadow-sm"
+              />
+            </div>
+          </div>
 
-          <button type="submit" className="primary-button full-button" style={{ padding: 12 }}>
-            Gửi email khôi phục
+          <button
+            type="submit"
+            className="w-full py-3 px-4 bg-[#004AC6] hover:bg-[#003899] text-white font-semibold rounded-xl text-sm shadow-md shadow-blue-600/20 transition-all flex items-center justify-center gap-2 mt-2"
+          >
+            <span>Send Reset Instructions</span>
+            <ArrowRight className="w-4 h-4" />
           </button>
 
-          <div style={{ textAlign: 'center', marginTop: 12, fontSize: 13 }}>
-            <Link to="/auth/login" style={{ color: 'var(--primary)' }}>
-              ← Quay lại Đăng nhập
+          <div className="text-center pt-2">
+            <Link
+              to="/auth/login"
+              className="inline-flex items-center gap-1 text-xs font-semibold text-[#004AC6] hover:underline"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Back to Sign In</span>
             </Link>
           </div>
         </form>

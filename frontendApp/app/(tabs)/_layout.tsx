@@ -84,7 +84,7 @@ export default function TabLayout() {
         options={{
           title: 'Tin nhắn',
           tabBarBadge: 2,
-          tabBarBadgeStyle: { backgroundColor: '#c5573e', fontSize: 10 },
+          tabBarBadgeStyle: { backgroundColor: '#004ac6', fontSize: 10 },
           tabBarIcon: ({ color, focused }) => (
             <Ionicons
               name={focused ? 'chatbubbles' : 'chatbubbles-outline'}
@@ -112,12 +112,12 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#c5573e',
+    backgroundColor: '#004ac6',
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: -8,
     marginBottom: 2,
-    shadowColor: '#c5573e',
+    shadowColor: '#004ac6',
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.35,
     shadowRadius: 5,

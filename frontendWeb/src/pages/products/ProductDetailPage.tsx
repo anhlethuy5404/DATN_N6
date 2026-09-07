@@ -12,7 +12,10 @@ import {
   AlertTriangle,
   ZoomIn,
   Heart,
-  Gavel
+  Gavel,
+  Edit,
+  Gift,
+  RefreshCw
 } from 'lucide-react'
 import { MainLayout } from '../../layouts/MainLayout'
 import { mockProducts, formatVND } from '../../mock/mockData'
@@ -22,7 +25,7 @@ import { ReportModal } from '../../components/modals/ReportModal'
 export const ProductDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const { savedProductIds, toggleSaveProduct } = useAuth()
+  const { savedProductIds, toggleSaveProduct, currentUser } = useAuth()
   const [activeImgIndex, setActiveImgIndex] = useState(0)
   const [showReport, setShowReport] = useState(false)
   const [quantity, setQuantity] = useState(1)
@@ -30,6 +33,7 @@ export const ProductDetailPage: React.FC = () => {
   const product = mockProducts.find((p) => p.id === id) || mockProducts[0]
   const isSaved = savedProductIds.includes(product.id)
   const images = product.images.length > 0 ? product.images : [product.primaryImage]
+  const isOwner = currentUser && (currentUser.id === product.sellerId || currentUser.fullName === product.sellerName)
 
   return (
     <MainLayout>
@@ -165,17 +169,20 @@ export const ProductDetailPage: React.FC = () => {
                 <button
                   className="primary-button full-button"
                   style={{ padding: '14px 20px', fontSize: 15, background: '#356b41' }}
-                  onClick={() => navigate('/messages')}
+                  onClick={() => {
+                    alert('Yêu cầu nhận đồ của bạn đã được gửi. Đang mở cuộc trò chuyện với người tặng...')
+                    navigate(`/messages?productId=${product.id}&sellerId=${product.sellerId}&action=pass`)
+                  }}
                 >
-                  Xin món đồ này (Gửi tin nhắn)
+                  <Gift size={18} /> Xin món đồ này (Gửi tin nhắn nhận đồ)
                 </button>
               ) : product.transactionType === 'BARTER' ? (
                 <button
                   className="primary-button full-button"
-                  style={{ padding: '14px 20px', fontSize: 15, background: '#8a523b' }}
-                  onClick={() => navigate('/messages')}
+                  style={{ padding: '14px 20px', fontSize: 15, background: '#712AE2' }}
+                  onClick={() => navigate(`/messages?productId=${product.id}&sellerId=${product.sellerId}&action=barter`)}
                 >
-                  Đề xuất đổi đồ (Gửi tin nhắn kèm món đồ)
+                  <RefreshCw size={18} /> Đề xuất đổi đồ (Gửi tin nhắn kèm món đồ)
                 </button>
               ) : (
                 <div style={{ display: 'flex', gap: 12 }}>
@@ -197,18 +204,28 @@ export const ProductDetailPage: React.FC = () => {
                   <button
                     className="primary-button"
                     style={{ flex: 1, padding: '14px 20px', fontSize: 15 }}
-                    onClick={() => navigate('/checkout')}
+                    onClick={() => navigate(`/checkout?productId=${product.id}&qty=${quantity}`)}
                   >
-                    <ShoppingBag size={18} /> Mua ngay qua Mộc Escrow
+                    <ShoppingBag size={18} /> Mua ngay qua Nexus Escrow
                   </button>
                 </div>
+              )}
+
+              {isOwner && (
+                <button
+                  className="outline-button full-button"
+                  style={{ padding: '12px 18px', fontSize: 14, borderColor: '#004AC6', color: '#004AC6' }}
+                  onClick={() => navigate(`/products/${product.id}/edit`)}
+                >
+                  <Edit size={16} /> Chỉnh sửa bài đăng của bạn
+                </button>
               )}
 
               <div style={{ display: 'flex', gap: 12 }}>
                 <button
                   className="outline-button"
                   style={{ flex: 1, justifyContent: 'center' }}
-                  onClick={() => navigate('/messages')}
+                  onClick={() => navigate(`/messages?productId=${product.id}&sellerId=${product.sellerId}`)}
                 >
                   <MessageCircle size={16} /> Nhắn tin thương lượng
                 </button>
@@ -317,20 +334,28 @@ export const ProductDetailPage: React.FC = () => {
 
               <button
                 className="outline-button full-button"
-                onClick={() => navigate('/messages')}
+                onClick={() => navigate(`/messages?productId=${product.id}&sellerId=${product.sellerId}`)}
               >
                 <MessageCircle size={15} /> Nhắn tin với người bán
               </button>
             </div>
 
             {/* Meetup Spot suggestion */}
-            <div className="safety-card">
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
-                <MapPin size={18} color="var(--primary)" />
-                <strong style={{ fontSize: 13 }}>Điểm hẹn an toàn đề xuất</strong>
+            <div
+              className="safety-card"
+              style={{ cursor: 'pointer', transition: 'all 0.2s' }}
+              onClick={() => navigate('/safespots')}
+              title="Xem mạng lưới điểm hẹn an toàn toàn quốc"
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <MapPin size={18} color="var(--primary)" />
+                  <strong style={{ fontSize: 13 }}>Điểm hẹn an toàn đề xuất</strong>
+                </div>
+                <span style={{ fontSize: 11, color: '#004AC6', fontWeight: 700 }}>Xem tất cả &gt;</span>
               </div>
               <p style={{ fontSize: 12, color: 'var(--muted-foreground)', margin: 0 }}>
-                {product.detailedLocation || 'Cầu Giấy, Hà Nội (Có camera an ninh và bảo vệ)'}
+                {product.detailedLocation || 'Highlands Coffee Duy Tân, Cầu Giấy (CCTV 24/7 & Bảo vệ)'}
               </p>
             </div>
           </aside>

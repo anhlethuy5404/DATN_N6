@@ -12,7 +12,7 @@ import {
   Image,
 } from 'react-native'
 import { useRouter } from 'expo-router'
-import { Ionicons } from '@expo/vector-icons'
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons'
 import { mockCategories, mockSafeSpots } from '../../mock/mockData'
 import { TransactionType, ProductCondition } from '../../types'
 import { Colors } from '../../constants/theme'
@@ -23,327 +23,296 @@ export default function CreateProductScreen() {
   const colorScheme = useColorScheme()
   const theme = Colors[colorScheme ?? 'light']
 
-  const [transactionType, setTransactionType] = useState<TransactionType>('SALE')
-  const [title, setTitle] = useState('')
+  const [transactionType, setTransactionType] = useState<TransactionType>('AUCTION')
+  const [title, setTitle] = useState('Máy ảnh Mirrorless cao cấp')
   const [categoryId, setCategoryId] = useState<number>(1)
   const [condition, setCondition] = useState<ProductCondition>('LIKE_NEW')
-  const [description, setDescription] = useState('')
-  const [price, setPrice] = useState('')
-  const [startPrice, setStartPrice] = useState('')
-  const [stepPrice, setStepPrice] = useState('100000')
-  const [allowNegotiation, setAllowNegotiation] = useState(true)
-  const [preferredItems, setPreferredItems] = useState('')
-  const [passNote, setPassNote] = useState('')
+  const [description, setDescription] = useState('Máy ảnh Sony A7III fullbox, 98%, kèm lens kit, hoạt động hoàn hảo.')
+  const [price, setPrice] = useState('12500000')
+  const [startPrice, setStartPrice] = useState('12500000')
+  const [stepPrice, setStepPrice] = useState('500000')
+  const [preferredItems, setPreferredItems] = useState('iPad Air 5 hoặc tương đương')
   const [useSafeMeetup, setUseSafeMeetup] = useState(true)
   const [selectedSpot, setSelectedSpot] = useState(mockSafeSpots[0])
 
-  // AI Autofill Demo
-  const handleAutofillAI = () => {
-    setTitle('Đèn bàn đồng cổ kiểu Pháp thập niên 1970')
-    setCategoryId(2) // Nội thất & Decor
-    setCondition('USED_GOOD')
-    setDescription(
-      'Đèn bàn chất liệu đồng nguyên khối, chao thủy tinh màu hổ phách tuyệt đẹp. Đèn hoạt động tốt, dây điện đã thay mới đảm bảo an toàn.'
-    )
-    if (transactionType === 'SALE') {
-      setPrice('1850000')
-      setAllowNegotiation(true)
-    } else if (transactionType === 'AUCTION') {
-      setStartPrice('1000000')
-      setStepPrice('100000')
-    } else if (transactionType === 'BARTER') {
-      setPreferredItems('Đồng hồ cơ hoặc máy ảnh film')
-    } else {
-      setPassNote('Tặng cho bạn nào mê decor vintage hoặc sinh viên kiến trúc')
-    }
+  const [frontCccd, setFrontCccd] = useState(true)
+  const [backCccd, setBackCccd] = useState(true)
 
-    Alert.alert('Trợ lý AI Mộc', 'Đã tự động điền tiêu đề, mô tả và gợi ý mức giá thị trường tối ưu!')
+  // AI Autofill Trigger
+  const handleAutofillAI = () => {
+    setTitle('Máy ảnh Mirrorless Sony A7 Mark III')
+    setCategoryId(1)
+    setCondition('LIKE_NEW')
+    setDescription('Máy ảnh Mirrorless cảm biến Full-frame 24.2MP, quay phim 4K HDR. Máy ít dùng, sensor sạch bong, full phụ kiện zin.')
+    setStartPrice('12500000')
+    setPrice('14800000')
+    setPreferredItems('Flycam DJI Mini 3 Pro hoặc iPhone 14 Pro')
+    Alert.alert('Nexus AI Assist', '✨ AI đã tự động phân tích ảnh, điền thông số kỹ thuật và đề xuất mức giá thị trường tối ưu!')
   }
 
   const handleSubmit = () => {
     if (!title.trim()) {
-      Alert.alert('Thông báo', 'Vui lòng nhập tiêu đề món đồ.')
+      Alert.alert('Lỗi', 'Vui lòng nhập tiêu đề sản phẩm')
       return
     }
-
-    Alert.alert(
-      'Đăng tin thành công! 🌿',
-      'Tin đăng của bạn đã được chuyển đến Kiểm duyệt viên Mộc để xác thực nhanh trong vòng 15 phút.',
-      [
-        {
-          text: 'Xem tin đăng',
-          onPress: () => router.push('/(tabs)/explore' as any),
-        },
-      ]
-    )
+    Alert.alert('Thành công', 'Bài đăng của bạn đã được gửi lên hệ thống và kích hoạt xác thực Escrow an toàn!', [
+      { text: 'Xem tin đăng', onPress: () => router.push('/(tabs)/index' as any) },
+    ])
   }
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
-      {/* Header */}
+      {/* Top Header */}
       <View style={[styles.header, { backgroundColor: theme.card, borderBottomColor: theme.border }]}>
-        <Text style={[styles.headerTitle, { color: theme.text }]}>Đăng Tin Mới</Text>
-        <TouchableOpacity style={styles.aiButton} onPress={handleAutofillAI}>
-          <Ionicons name="sparkles" size={14} color="#ffffff" style={{ marginRight: 4 }} />
-          <Text style={styles.aiButtonText}>AI Điền Tự Động</Text>
+        <Text style={styles.headerTitle}>Đăng tin giao dịch</Text>
+        <TouchableOpacity style={styles.aiButton} onPress={handleAutofillAI} activeOpacity={0.8}>
+          <MaterialCommunityIcons name="creation" size={16} color="#ffffff" style={{ marginRight: 4 }} />
+          <Text style={styles.aiButtonText}>AI Điền tự động</Text>
         </TouchableOpacity>
       </View>
 
-      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        {/* 1. Chọn loại hình giao dịch */}
-        <Text style={[styles.sectionTitle, { color: theme.text }]}>1. Loại hình giao dịch</Text>
-        <View style={styles.typeRow}>
-          {[
-            { type: 'SALE', label: 'Bán lẻ', icon: 'pricetag-outline' },
-            { type: 'AUCTION', label: 'Đấu giá', icon: 'hammer-outline' },
-            { type: 'BARTER', label: 'Trao đổi', icon: 'swap-horizontal-outline' },
-            { type: 'PASS', label: 'Pass đồ', icon: 'gift-outline' },
-          ].map((item) => {
-            const isSelected = transactionType === item.type
-            return (
-              <TouchableOpacity
-                key={item.type}
-                onPress={() => setTransactionType(item.type as any)}
-                style={[
-                  styles.typeCard,
-                  {
-                    backgroundColor: isSelected ? theme.primaryLight : theme.card,
-                    borderColor: isSelected ? theme.primary : theme.border,
-                  },
-                ]}
-              >
-                <Ionicons
-                  name={item.icon as any}
-                  size={20}
-                  color={isSelected ? theme.primary : theme.textMuted}
-                />
-                <Text
-                  style={[
-                    styles.typeCardText,
-                    { color: isSelected ? theme.primary : theme.text, fontWeight: isSelected ? '700' : '500' },
-                  ]}
-                >
-                  {item.label}
-                </Text>
-              </TouchableOpacity>
-            )
-          })}
-        </View>
-
-        {/* 2. Ảnh sản phẩm */}
-        <Text style={[styles.sectionTitle, { color: theme.text }]}>2. Hình ảnh thực tế (Tối đa 6 ảnh)</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.imageScroll}>
-          <TouchableOpacity style={[styles.uploadBox, { borderColor: theme.primary }]}>
-            <Ionicons name="camera" size={24} color={theme.primary} />
-            <Text style={[styles.uploadText, { color: theme.primary }]}>Thêm ảnh</Text>
-          </TouchableOpacity>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+        {/* Photo Upload Hero Box from Figma */}
+        <View style={styles.photoHeroCard}>
           <Image
-            source={{ uri: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=400&q=80' }}
-            style={styles.previewImage}
+            source={{ uri: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=800&q=80' }}
+            style={styles.heroImage}
           />
-        </ScrollView>
+          <View style={styles.heroImageOverlay}>
+            <TouchableOpacity style={styles.addPhotoButton} activeOpacity={0.8}>
+              <Ionicons name="camera" size={24} color="#0b1c30" />
+              <Text style={styles.addPhotoText}>Thêm Ảnh</Text>
+            </TouchableOpacity>
+          </View>
 
-        {/* 3. Thông tin món đồ */}
-        <Text style={[styles.sectionTitle, { color: theme.text }]}>3. Thông tin món đồ</Text>
-        <View style={styles.formGroup}>
-          <Text style={[styles.label, { color: theme.text }]}>Tiêu đề bài đăng *</Text>
-          <TextInput
-            style={[styles.input, { backgroundColor: theme.card, borderColor: theme.border, color: theme.text }]}
-            placeholder="Ví dụ: Máy ảnh film Olympus OM-1..."
-            placeholderTextColor={theme.textMuted}
-            value={title}
-            onChangeText={setTitle}
-          />
+          {/* AI Recognition Badge */}
+          <View style={styles.aiRecognitionPill}>
+            <MaterialCommunityIcons name="creation" size={14} color="#ffffff" />
+            <Text style={styles.aiRecognitionText}>AI nhận diện: Đồ Điện Tử & Máy ảnh</Text>
+          </View>
+        </View>
+        <Text style={styles.photoNote}>Tải lên ít nhất 3 ảnh chi tiết để tăng điểm uy tín Trust Score.</Text>
+
+        {/* Transaction Type Segmented Control from Figma */}
+        <View style={styles.segmentedContainer}>
+          <TouchableOpacity
+            style={[
+              styles.segmentTab,
+              transactionType === 'AUCTION' && styles.segmentTabActive,
+            ]}
+            onPress={() => setTransactionType('AUCTION')}
+          >
+            <Text
+              style={[
+                styles.segmentText,
+                transactionType === 'AUCTION' && styles.segmentTextActive,
+              ]}
+            >
+              Đấu giá
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[
+              styles.segmentTab,
+              transactionType === 'SALE' && styles.segmentTabActive,
+            ]}
+            onPress={() => setTransactionType('SALE')}
+          >
+            <Text
+              style={[
+                styles.segmentText,
+                transactionType === 'SALE' && styles.segmentTextActive,
+              ]}
+            >
+              Mua bán
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[
+              styles.segmentTab,
+              transactionType === 'BARTER' && styles.segmentTabActive,
+            ]}
+            onPress={() => setTransactionType('BARTER')}
+          >
+            <Text
+              style={[
+                styles.segmentText,
+                transactionType === 'BARTER' && styles.segmentTextActive,
+              ]}
+            >
+              Trao đổi
+            </Text>
+          </TouchableOpacity>
         </View>
 
+        {/* Form Inputs */}
         <View style={styles.formGroup}>
-          <Text style={[styles.label, { color: theme.text }]}>Danh mục</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.catScroll}>
-            {mockCategories.map((c) => {
-              const isSelected = categoryId === c.id
-              return (
-                <TouchableOpacity
-                  key={c.id}
-                  onPress={() => setCategoryId(c.id)}
-                  style={[
-                    styles.catChip,
-                    {
-                      backgroundColor: isSelected ? theme.primary : theme.card,
-                      borderColor: isSelected ? theme.primary : theme.border,
-                    },
-                  ]}
-                >
-                  <Text style={[styles.catChipText, { color: isSelected ? '#ffffff' : theme.text }]}>
-                    {c.name}
-                  </Text>
-                </TouchableOpacity>
-              )
-            })}
-          </ScrollView>
-        </View>
-
-        <View style={styles.formGroup}>
-          <Text style={[styles.label, { color: theme.text }]}>Tình trạng món đồ</Text>
-          <View style={styles.conditionRow}>
-            {[
-              { key: 'LIKE_NEW', label: 'Mới 99%' },
-              { key: 'USED_GOOD', label: 'Rất tốt' },
-              { key: 'USED_FAIR', label: 'Cũ theo thời gian' },
-            ].map((c) => {
-              const isSelected = condition === c.key
-              return (
-                <TouchableOpacity
-                  key={c.key}
-                  onPress={() => setCondition(c.key as any)}
-                  style={[
-                    styles.conditionBtn,
-                    {
-                      backgroundColor: isSelected ? theme.primary : theme.card,
-                      borderColor: isSelected ? theme.primary : theme.border,
-                    },
-                  ]}
-                >
-                  <Text style={{ color: isSelected ? '#ffffff' : theme.text, fontSize: 12, fontWeight: '600' }}>
-                    {c.label}
-                  </Text>
-                </TouchableOpacity>
-              )
-            })}
+          <Text style={styles.label}>Tiêu đề sản phẩm</Text>
+          <View style={styles.inputCard}>
+            <TextInput
+              style={[styles.input, { color: theme.text }]}
+              value={title}
+              onChangeText={setTitle}
+              placeholder="VD: Máy ảnh Mirrorless cao cấp"
+              placeholderTextColor="#737686"
+            />
           </View>
         </View>
 
         <View style={styles.formGroup}>
-          <Text style={[styles.label, { color: theme.text }]}>Mô tả chi tiết *</Text>
-          <TextInput
-            style={[
-              styles.textArea,
-              { backgroundColor: theme.card, borderColor: theme.border, color: theme.text },
-            ]}
-            placeholder="Mô tả năm sản xuất, xuất xứ, phụ kiện đi kèm, tình trạng trầy xước..."
-            placeholderTextColor={theme.textMuted}
-            multiline
-            numberOfLines={4}
-            value={description}
-            onChangeText={setDescription}
-          />
+          <Text style={styles.label}>Mô tả chi tiết</Text>
+          <View style={[styles.inputCard, { height: 110 }]}>
+            <TextInput
+              style={[styles.input, { color: theme.text, height: 100 }]}
+              value={description}
+              onChangeText={setDescription}
+              placeholder="Mô tả tình trạng, thông số, phụ kiện đi kèm..."
+              placeholderTextColor="#737686"
+              multiline
+              textAlignVertical="top"
+            />
+          </View>
         </View>
 
-        {/* 4. Định giá hoặc Tiêu chí */}
-        <Text style={[styles.sectionTitle, { color: theme.text }]}>4. Thiết lập giá & Điều kiện</Text>
-        {transactionType === 'SALE' && (
-          <View>
-            <View style={styles.formGroup}>
-              <Text style={[styles.label, { color: theme.text }]}>Giá bán lẻ (VNĐ) *</Text>
-              <TextInput
-                style={[styles.input, { backgroundColor: theme.card, borderColor: theme.border, color: theme.text }]}
-                placeholder="Nhập số tiền..."
-                placeholderTextColor={theme.textMuted}
-                keyboardType="numeric"
-                value={price}
-                onChangeText={setPrice}
-              />
+        {/* Pricing Field with AI system recommendation from Figma */}
+        {transactionType === 'AUCTION' && (
+          <View style={styles.formGroup}>
+            <View style={styles.labelRow}>
+              <Text style={styles.label}>Giá khởi điểm</Text>
+              <MaterialCommunityIcons name="information-outline" size={14} color="#712ae2" />
             </View>
-            <View style={styles.switchRow}>
-              <Text style={[styles.switchLabel, { color: theme.text }]}>Cho phép người mua đàm phán trả giá</Text>
-              <Switch
-                value={allowNegotiation}
-                onValueChange={setAllowNegotiation}
-                trackColor={{ false: '#d1cbbd', true: theme.primary }}
+            <View style={styles.priceInputBox}>
+              <Text style={styles.currencySymbol}>₫</Text>
+              <TextInput
+                style={[styles.priceInput, { color: theme.text }]}
+                value={startPrice}
+                onChangeText={setStartPrice}
+                keyboardType="numeric"
+                placeholder="12,500,000"
+                placeholderTextColor="#737686"
               />
+              <MaterialCommunityIcons name="creation" size={20} color="#712ae2" style={styles.priceAiIcon} />
+            </View>
+            <View style={styles.aiPriceTipRow}>
+              <Ionicons name="trending-up" size={12} color="#712ae2" />
+              <Text style={styles.aiPriceTipText}>Gợi ý từ hệ thống dựa trên lịch sử giao dịch tương đương.</Text>
+            </View>
+
+            <View style={{ marginTop: 12 }}>
+              <Text style={styles.label}>Bước giá tối thiểu (VNĐ)</Text>
+              <View style={styles.inputCard}>
+                <TextInput
+                  style={[styles.input, { color: theme.text }]}
+                  value={stepPrice}
+                  onChangeText={setStepPrice}
+                  keyboardType="numeric"
+                />
+              </View>
             </View>
           </View>
         )}
 
-        {transactionType === 'AUCTION' && (
-          <View>
-            <View style={styles.formGroup}>
-              <Text style={[styles.label, { color: theme.text }]}>Giá khởi điểm (VNĐ) *</Text>
-              <TextInput
-                style={[styles.input, { backgroundColor: theme.card, borderColor: theme.border, color: theme.text }]}
-                placeholder="Ví dụ: 1.000.000"
-                placeholderTextColor={theme.textMuted}
-                keyboardType="numeric"
-                value={startPrice}
-                onChangeText={setStartPrice}
-              />
+        {transactionType === 'SALE' && (
+          <View style={styles.formGroup}>
+            <View style={styles.labelRow}>
+              <Text style={styles.label}>Giá bán niêm yết</Text>
+              <MaterialCommunityIcons name="information-outline" size={14} color="#004ac6" />
             </View>
-            <View style={styles.formGroup}>
-              <Text style={[styles.label, { color: theme.text }]}>Bước giá tối thiểu (VNĐ)</Text>
+            <View style={styles.priceInputBox}>
+              <Text style={styles.currencySymbol}>₫</Text>
               <TextInput
-                style={[styles.input, { backgroundColor: theme.card, borderColor: theme.border, color: theme.text }]}
-                placeholder="Mặc định: 100.000"
-                placeholderTextColor={theme.textMuted}
+                style={[styles.priceInput, { color: theme.text }]}
+                value={price}
+                onChangeText={setPrice}
                 keyboardType="numeric"
-                value={stepPrice}
-                onChangeText={setStepPrice}
+                placeholder="14,800,000"
+                placeholderTextColor="#737686"
               />
+              <MaterialCommunityIcons name="creation" size={20} color="#712ae2" style={styles.priceAiIcon} />
             </View>
           </View>
         )}
 
         {transactionType === 'BARTER' && (
           <View style={styles.formGroup}>
-            <Text style={[styles.label, { color: theme.text }]}>Món đồ bạn muốn đổi bù trừ *</Text>
-            <TextInput
-              style={[styles.input, { backgroundColor: theme.card, borderColor: theme.border, color: theme.text }]}
-              placeholder="Ví dụ: Cần đổi máy ảnh film ngàm M42..."
-              placeholderTextColor={theme.textMuted}
-              value={preferredItems}
-              onChangeText={setPreferredItems}
-            />
+            <Text style={styles.label}>Món đồ bạn đang tìm kiếm để trao đổi</Text>
+            <View style={styles.inputCard}>
+              <TextInput
+                style={[styles.input, { color: theme.text }]}
+                value={preferredItems}
+                onChangeText={setPreferredItems}
+                placeholder="VD: iPad Air 5 hoặc Flycam mini..."
+                placeholderTextColor="#737686"
+              />
+            </View>
           </View>
         )}
 
-        {transactionType === 'PASS' && (
-          <View style={styles.formGroup}>
-            <Text style={[styles.label, { color: theme.text }]}>Tiêu chí / Lời nhắn người nhận quà</Text>
-            <TextInput
-              style={[styles.input, { backgroundColor: theme.card, borderColor: theme.border, color: theme.text }]}
-              placeholder="Ví dụ: Tặng các bạn sinh viên cần đồ dùng học tập..."
-              placeholderTextColor={theme.textMuted}
-              value={passNote}
-              onChangeText={setPassNote}
-            />
+        {/* Identity Verification Section from Figma */}
+        <View style={styles.kycCard}>
+          <View style={styles.kycHeaderRow}>
+            <View style={styles.kycTitleLeft}>
+              <View style={styles.shieldIcon}>
+                <Ionicons name="shield-checkmark" size={16} color="#ffffff" />
+              </View>
+              <Text style={styles.kycTitle}>Xác thực danh tính</Text>
+            </View>
+            <View style={styles.requiredBadge}>
+              <Text style={styles.requiredBadgeText}>Bắt buộc</Text>
+            </View>
           </View>
-        )}
+          <Text style={styles.kycSubtitle}>
+            Tải lên mặt trước và mặt sau CCCD/CMND để bảo vệ giao dịch của bạn qua Escrow.
+          </Text>
 
-        {/* 5. Điểm hẹn an toàn Safe Meetup */}
-        <Text style={[styles.sectionTitle, { color: theme.text }]}>5. Điểm hẹn an toàn (Safe Meetup)</Text>
-        <View style={styles.safeMeetupBox}>
-          <Ionicons name="shield-checkmark" size={18} color="#2f6844" />
-          <Text style={styles.safeMeetupText}>
-            Giao dịch tại điểm hẹn an toàn có camera quan sát, nhân viên hỗ trợ giúp loại bỏ nguy cơ lừa đảo!
+          <View style={styles.cccdRow}>
+            <TouchableOpacity
+              style={[styles.cccdBox, frontCccd && styles.cccdBoxVerified]}
+              onPress={() => setFrontCccd(!frontCccd)}
+            >
+              <Ionicons
+                name={frontCccd ? 'checkmark-circle' : 'card-outline'}
+                size={22}
+                color={frontCccd ? '#007d55' : '#004ac6'}
+              />
+              <Text style={[styles.cccdText, frontCccd && { color: '#007d55' }]}>
+                {frontCccd ? 'Mặt trước ✓' : 'Mặt trước'}
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.cccdBox, backCccd && styles.cccdBoxVerified]}
+              onPress={() => setBackCccd(!backCccd)}
+            >
+              <Ionicons
+                name={backCccd ? 'checkmark-circle' : 'card-outline'}
+                size={22}
+                color={backCccd ? '#007d55' : '#737686'}
+              />
+              <Text style={[styles.cccdText, backCccd && { color: '#007d55' }]}>
+                {backCccd ? 'Mặt sau ✓' : 'Mặt sau'}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Safe Meetup Spot Card */}
+        <View style={styles.safeSpotSection}>
+          <View style={styles.safeSpotHeader}>
+            <Ionicons name="business" size={18} color="#004ac6" />
+            <Text style={styles.safeSpotTitle}>Điểm hẹn giao nhận Safe Spot</Text>
+          </View>
+          <Text style={styles.safeSpotDesc}>
+            {selectedSpot.name} - {selectedSpot.address} (Có camera 24/7 & Điều phối viên Mộc)
           </Text>
         </View>
 
-        {mockSafeSpots.slice(0, 2).map((spot) => (
-          <TouchableOpacity
-            key={spot.id}
-            onPress={() => setSelectedSpot(spot)}
-            style={[
-              styles.spotOption,
-              {
-                backgroundColor: selectedSpot.id === spot.id ? theme.primaryLight : theme.card,
-                borderColor: selectedSpot.id === spot.id ? theme.primary : theme.border,
-              },
-            ]}
-          >
-            <Ionicons
-              name={selectedSpot.id === spot.id ? 'radio-button-on' : 'radio-button-off'}
-              size={18}
-              color={selectedSpot.id === spot.id ? theme.primary : theme.textMuted}
-              style={{ marginRight: 10 }}
-            />
-            <View style={{ flex: 1 }}>
-              <Text style={[styles.spotName, { color: theme.text }]}>{spot.name}</Text>
-              <Text style={[styles.spotAddress, { color: theme.textMuted }]}>{spot.address}</Text>
-            </View>
-          </TouchableOpacity>
-        ))}
-
         {/* Submit Button */}
-        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-          <Text style={styles.submitButtonText}>ĐĂNG TIN NGAY</Text>
+        <TouchableOpacity style={styles.submitBtn} onPress={handleSubmit} activeOpacity={0.88}>
+          <Text style={styles.submitBtnText}>Đăng tin ngay</Text>
+          <Ionicons name="arrow-forward" size={18} color="#ffffff" style={{ marginLeft: 6 }} />
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
@@ -359,185 +328,301 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingTop: 8,
+    paddingBottom: 12,
     borderBottomWidth: 1,
   },
   headerTitle: {
     fontSize: 18,
     fontWeight: '800',
+    color: '#0b1c30',
   },
   aiButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#8c3b28',
+    backgroundColor: '#712ae2',
     paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: 8,
+    borderRadius: 16,
   },
   aiButtonText: {
     color: '#ffffff',
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '700',
   },
-  content: {
+  scrollContent: {
     padding: 16,
     paddingBottom: 40,
   },
-  sectionTitle: {
-    fontSize: 15,
-    fontWeight: '800',
-    marginTop: 16,
-    marginBottom: 10,
-  },
-  typeRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 10,
-  },
-  typeCard: {
-    flex: 1,
-    alignItems: 'center',
-    paddingVertical: 10,
-    borderRadius: 12,
+  photoHeroCard: {
+    height: 180,
+    borderRadius: 16,
+    overflow: 'hidden',
+    position: 'relative',
+    backgroundColor: '#e5eeff',
     borderWidth: 1,
-    marginHorizontal: 3,
+    borderColor: '#c3c6d7',
+    marginBottom: 6,
   },
-  typeCardText: {
-    fontSize: 11,
-    marginTop: 4,
+  heroImage: {
+    width: '100%',
+    height: '100%',
   },
-  imageScroll: {
-    flexDirection: 'row',
-    marginBottom: 10,
-  },
-  uploadBox: {
-    width: 90,
-    height: 90,
-    borderRadius: 12,
-    borderWidth: 1.5,
-    borderStyle: 'dashed',
+  heroImageOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.2)',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 10,
-    backgroundColor: '#faece8',
   },
-  uploadText: {
+  addPhotoButton: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    backgroundColor: 'rgba(248,249,255,0.92)',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 28,
+    gap: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+  },
+  addPhotoText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#0b1c30',
+  },
+  aiRecognitionPill: {
+    position: 'absolute',
+    bottom: 12,
+    alignSelf: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(138,76,252,0.95)',
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderRadius: 20,
+    gap: 6,
+  },
+  aiRecognitionText: {
+    color: '#ffffff',
     fontSize: 11,
     fontWeight: '700',
-    marginTop: 4,
   },
-  previewImage: {
-    width: 90,
-    height: 90,
+  photoNote: {
+    fontSize: 11,
+    color: '#737686',
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  segmentedContainer: {
+    flexDirection: 'row',
+    backgroundColor: '#eff4ff',
     borderRadius: 12,
+    padding: 4,
+    borderWidth: 1,
+    borderColor: '#d3e4fe',
+    marginBottom: 18,
+  },
+  segmentTab: {
+    flex: 1,
+    paddingVertical: 10,
+    alignItems: 'center',
+    borderRadius: 8,
+  },
+  segmentTabActive: {
+    backgroundColor: '#f8f9ff',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  segmentText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#434655',
+  },
+  segmentTextActive: {
+    color: '#004ac6',
+    fontWeight: '800',
   },
   formGroup: {
-    marginBottom: 14,
+    marginBottom: 16,
   },
   label: {
     fontSize: 13,
-    fontWeight: '600',
+    fontWeight: '700',
+    color: '#0b1c30',
     marginBottom: 6,
   },
-  input: {
-    height: 44,
-    borderRadius: 10,
-    borderWidth: 1,
-    paddingHorizontal: 12,
-    fontSize: 14,
-  },
-  textArea: {
-    height: 90,
-    borderRadius: 10,
-    borderWidth: 1,
-    padding: 12,
-    fontSize: 14,
-    textAlignVertical: 'top',
-  },
-  catScroll: {
+  labelRow: {
     flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginBottom: 6,
   },
-  catChip: {
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    borderRadius: 16,
+  inputCard: {
+    backgroundColor: '#f8f9ff',
+    borderRadius: 10,
     borderWidth: 1,
+    borderColor: '#c3c6d7',
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+  },
+  input: {
+    fontSize: 14,
+    padding: 0,
+  },
+  priceInputBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f8f9ff',
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: 'rgba(113,42,226,0.5)',
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+  },
+  currencySymbol: {
+    fontSize: 20,
+    fontWeight: '800',
+    color: '#0b1c30',
     marginRight: 8,
   },
-  catChipText: {
-    fontSize: 12,
+  priceInput: {
+    flex: 1,
+    fontSize: 20,
+    fontWeight: '800',
+    padding: 0,
+  },
+  priceAiIcon: {
+    marginLeft: 8,
+  },
+  aiPriceTipRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 6,
+    gap: 4,
+  },
+  aiPriceTipText: {
+    fontSize: 11,
+    color: '#712ae2',
     fontWeight: '600',
   },
-  conditionRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  conditionBtn: {
-    flex: 1,
-    alignItems: 'center',
-    paddingVertical: 9,
-    borderRadius: 10,
+  kycCard: {
+    backgroundColor: '#e5eeff',
+    borderRadius: 14,
     borderWidth: 1,
-    marginHorizontal: 3,
+    borderColor: 'rgba(195,198,215,0.6)',
+    padding: 14,
+    marginBottom: 16,
   },
-  switchRow: {
+  kycHeaderRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 8,
+    marginBottom: 6,
   },
-  switchLabel: {
-    fontSize: 13,
-    fontWeight: '500',
-  },
-  safeMeetupBox: {
-    flexDirection: 'row',
-    backgroundColor: '#eaf3ed',
-    padding: 12,
-    borderRadius: 10,
-    marginBottom: 12,
-    alignItems: 'center',
-  },
-  safeMeetupText: {
-    color: '#2f6844',
-    fontSize: 12,
-    lineHeight: 16,
-    marginLeft: 8,
-    flex: 1,
-  },
-  spotOption: {
+  kycTitleLeft: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 12,
+    gap: 6,
+  },
+  shieldIcon: {
+    width: 24,
+    height: 24,
     borderRadius: 12,
-    borderWidth: 1,
-    marginBottom: 8,
-  },
-  spotName: {
-    fontSize: 13,
-    fontWeight: '700',
-    marginBottom: 2,
-  },
-  spotAddress: {
-    fontSize: 11,
-  },
-  submitButton: {
-    backgroundColor: '#c5573e',
-    height: 48,
-    borderRadius: 12,
+    backgroundColor: '#004ac6',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 20,
-    shadowColor: '#c5573e',
+  },
+  kycTitle: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: '#0b1c30',
+  },
+  requiredBadge: {
+    backgroundColor: '#ffdad6',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 6,
+  },
+  requiredBadgeText: {
+    color: '#ba1a1a',
+    fontSize: 10,
+    fontWeight: '700',
+  },
+  kycSubtitle: {
+    fontSize: 11,
+    color: '#434655',
+    lineHeight: 16,
+    marginBottom: 12,
+  },
+  cccdRow: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  cccdBox: {
+    flex: 1,
+    height: 70,
+    borderRadius: 10,
+    borderWidth: 1.5,
+    borderStyle: 'dashed',
+    borderColor: '#c3c6d7',
+    backgroundColor: '#f8f9ff',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 4,
+  },
+  cccdBoxVerified: {
+    borderColor: '#007d55',
+    backgroundColor: '#d1f4e0',
+  },
+  cccdText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#004ac6',
+  },
+  safeSpotSection: {
+    backgroundColor: '#ffffff',
+    borderRadius: 12,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: '#c3c6d7',
+    marginBottom: 24,
+  },
+  safeSpotHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginBottom: 4,
+  },
+  safeSpotTitle: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#0b1c30',
+  },
+  safeSpotDesc: {
+    fontSize: 11,
+    color: '#737686',
+  },
+  submitBtn: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#004ac6',
+    paddingVertical: 14,
+    borderRadius: 12,
+    shadowColor: '#004ac6',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
-    shadowRadius: 6,
+    shadowRadius: 8,
     elevation: 4,
   },
-  submitButtonText: {
+  submitBtnText: {
     color: '#ffffff',
     fontSize: 15,
     fontWeight: '800',
-    letterSpacing: 0.5,
   },
 })

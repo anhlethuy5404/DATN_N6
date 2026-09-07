@@ -7,8 +7,10 @@ import {
   TextInput,
   TouchableOpacity,
   SafeAreaView,
+  Switch,
 } from 'react-native'
-import { Ionicons } from '@expo/vector-icons'
+import { useRouter } from 'expo-router'
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons'
 import { mockProducts, mockCategories } from '../../mock/mockData'
 import { ProductCard } from '../../components/ProductCard'
 import { TransactionType } from '../../types'
@@ -16,12 +18,14 @@ import { Colors } from '../../constants/theme'
 import { useColorScheme } from '../../hooks/use-color-scheme'
 
 export default function ExploreScreen() {
+  const router = useRouter()
   const colorScheme = useColorScheme()
   const theme = Colors[colorScheme ?? 'light']
 
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedType, setSelectedType] = useState<TransactionType | 'ALL'>('ALL')
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null)
+  const [nearMeOnly, setNearMeOnly] = useState(false)
 
   const filteredProducts = useMemo(() => {
     return mockProducts.filter((p) => {
@@ -39,33 +43,54 @@ export default function ExploreScreen() {
 
   const types = [
     { key: 'ALL', label: 'Tất cả' },
+    { key: 'BARTER', label: '🔄 Trao đổi đồ' },
     { key: 'AUCTION', label: '🔨 Đấu giá' },
-    { key: 'SALE', label: '🏷️ Mua ngay' },
-    { key: 'BARTER', label: '🔄 Trao đổi' },
-    { key: 'PASS', label: '🎁 Pass tặng' },
+    { key: 'SALE', label: '🏷️ Mua bán' },
+    { key: 'PASS', label: '🎁 Tặng / Pass' },
   ]
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
-      {/* Top Search Input */}
-      <View style={[styles.searchHeader, { backgroundColor: theme.card, borderBottomColor: theme.border }]}>
-        <View style={[styles.searchBox, { backgroundColor: theme.background, borderColor: theme.border }]}>
-          <Ionicons name="search" size={18} color={theme.textMuted} style={styles.searchIcon} />
+      {/* Top Header with Near Me switch matching TraoDổiDồNexusExchangeMobile */}
+      <View style={[styles.header, { backgroundColor: theme.card, borderBottomColor: theme.border }]}>
+        <View style={styles.headerTopRow}>
+          <View>
+            <Text style={styles.headerTitle}>Trao đổi & Khám phá</Text>
+            <Text style={styles.headerSubtitle}>Nexus C2C Smart Trading</Text>
+          </View>
+
+          {/* "Gần bạn" switch pill from Figma */}
+          <View style={styles.nearMePill}>
+            <Ionicons name="location-outline" size={14} color="#004ac6" />
+            <Text style={styles.nearMeText}>Gần bạn</Text>
+            <Switch
+              value={nearMeOnly}
+              onValueChange={setNearMeOnly}
+              trackColor={{ false: '#c3c6d7', true: '#004ac6' }}
+              thumbColor="#ffffff"
+              style={{ transform: [{ scaleX: 0.75 }, { scaleY: 0.75 }] }}
+            />
+          </View>
+        </View>
+
+        {/* AI & Keyword Search Bar */}
+        <View style={styles.searchBox}>
+          <Ionicons name="search" size={18} color="#737686" style={styles.searchIcon} />
           <TextInput
             style={[styles.input, { color: theme.text }]}
-            placeholder="Tìm theo tên sản phẩm, danh mục..."
-            placeholderTextColor={theme.textMuted}
+            placeholder="Tìm món đồ muốn đổi, sản phẩm đấu giá..."
+            placeholderTextColor="#737686"
             value={searchQuery}
             onChangeText={setSearchQuery}
           />
           {searchQuery.length > 0 && (
             <TouchableOpacity onPress={() => setSearchQuery('')}>
-              <Ionicons name="close-circle" size={18} color={theme.textMuted} />
+              <Ionicons name="close-circle" size={18} color="#737686" />
             </TouchableOpacity>
           )}
         </View>
 
-        {/* Transaction Type Filter Pills */}
+        {/* Type Filter Pills */}
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.typeScroll}>
           {types.map((t) => {
             const isSelected = selectedType === t.key
@@ -74,17 +99,17 @@ export default function ExploreScreen() {
                 key={t.key}
                 onPress={() => setSelectedType(t.key as any)}
                 style={[
-                  styles.filterPill,
+                  styles.typePill,
                   {
-                    backgroundColor: isSelected ? theme.primary : theme.background,
-                    borderColor: isSelected ? theme.primary : theme.border,
+                    backgroundColor: isSelected ? '#004ac6' : '#e5eeff',
+                    borderColor: isSelected ? '#004ac6' : '#c3c6d7',
                   },
                 ]}
               >
                 <Text
                   style={[
-                    styles.filterPillText,
-                    { color: isSelected ? '#ffffff' : theme.text },
+                    styles.typePillText,
+                    { color: isSelected ? '#ffffff' : '#0b1c30' },
                   ]}
                 >
                   {t.label}
@@ -95,43 +120,97 @@ export default function ExploreScreen() {
         </ScrollView>
       </View>
 
-      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        {/* Results summary */}
-        <View style={styles.resultSummary}>
-          <Text style={[styles.resultCount, { color: theme.text }]}>
-            Tìm thấy <Text style={{ color: theme.primary, fontWeight: '800' }}>{filteredProducts.length}</Text> món đồ
-          </Text>
-
-          {(selectedType !== 'ALL' || selectedCategory !== null || searchQuery !== '') && (
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+        {/* Categories Horizontal */}
+        <View style={styles.categoryRow}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <TouchableOpacity
-              onPress={() => {
-                setSelectedType('ALL')
-                setSelectedCategory(null)
-                setSearchQuery('')
-              }}
+              onPress={() => setSelectedCategory(null)}
+              style={[
+                styles.catPill,
+                {
+                  backgroundColor: selectedCategory === null ? '#004ac6' : theme.card,
+                  borderColor: selectedCategory === null ? '#004ac6' : theme.border,
+                },
+              ]}
             >
-              <Text style={[styles.clearFilter, { color: theme.primary }]}>Đặt lại bộ lọc</Text>
+              <Text
+                style={[
+                  styles.catPillText,
+                  { color: selectedCategory === null ? '#ffffff' : theme.text },
+                ]}
+              >
+                Tất cả danh mục
+              </Text>
             </TouchableOpacity>
+            {mockCategories.map((cat) => {
+              const isSelected = selectedCategory === cat.id
+              return (
+                <TouchableOpacity
+                  key={cat.id}
+                  onPress={() => setSelectedCategory(isSelected ? null : cat.id)}
+                  style={[
+                    styles.catPill,
+                    {
+                      backgroundColor: isSelected ? '#004ac6' : theme.card,
+                      borderColor: isSelected ? '#004ac6' : theme.border,
+                    },
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.catPillText,
+                      { color: isSelected ? '#ffffff' : theme.text },
+                    ]}
+                  >
+                    {cat.name}
+                  </Text>
+                </TouchableOpacity>
+              )
+            })}
+          </ScrollView>
+        </View>
+
+        {/* Barter Fast Proposal Banner */}
+        <View style={styles.barterCallout}>
+          <View style={styles.barterCalloutLeft}>
+            <MaterialCommunityIcons name="swap-horizontal-bold" size={24} color="#712ae2" />
+            <View style={{ marginLeft: 8 }}>
+              <Text style={styles.barterCalloutTitle}>Giao dịch Trao Đổi Đồ</Text>
+              <Text style={styles.barterCalloutSubtitle}>
+                Chọn món đồ của bạn để gạ đổi lấy đồ ưng ý kèm điểm hẹn Safe Spot.
+              </Text>
+            </View>
+          </View>
+          <TouchableOpacity
+            style={styles.barterCalloutBtn}
+            onPress={() => router.push('/barter/offer' as any)}
+          >
+            <Text style={styles.barterCalloutBtnText}>Đề xuất đổi</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Feed count */}
+        <View style={styles.resultRow}>
+          <Text style={[styles.resultCount, { color: theme.textMuted }]}>
+            Hiển thị {filteredProducts.length} kết quả
+          </Text>
+          {nearMeOnly && (
+            <View style={styles.nearMeActiveBadge}>
+              <Ionicons name="navigate" size={11} color="#007d55" />
+              <Text style={styles.nearMeActiveText}>Bán kính 5km</Text>
+            </View>
           )}
         </View>
 
-        {filteredProducts.length === 0 ? (
-          <View style={styles.emptyState}>
-            <Ionicons name="search-outline" size={48} color={theme.textMuted} style={{ marginBottom: 12 }} />
-            <Text style={[styles.emptyTitle, { color: theme.text }]}>Không tìm thấy món đồ phù hợp</Text>
-            <Text style={[styles.emptySubtitle, { color: theme.textMuted }]}>
-              Thử tìm kiếm với từ khóa khác hoặc xóa bớt các điều kiện lọc.
-            </Text>
-          </View>
-        ) : (
-          <View style={styles.productGrid}>
-            {filteredProducts.map((prod) => (
-              <View key={prod.id} style={styles.gridItem}>
-                <ProductCard product={prod} />
-              </View>
-            ))}
-          </View>
-        )}
+        {/* 2-Column Grid */}
+        <View style={styles.grid}>
+          {filteredProducts.map((product) => (
+            <View key={product.id} style={styles.gridCol}>
+              <ProductCard product={product} />
+            </View>
+          ))}
+        </View>
       </ScrollView>
     </SafeAreaView>
   )
@@ -141,19 +220,53 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  searchHeader: {
+  header: {
     paddingHorizontal: 16,
     paddingTop: 8,
     paddingBottom: 10,
     borderBottomWidth: 1,
+  },
+  headerTopRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: '#0b1c30',
+  },
+  headerSubtitle: {
+    fontSize: 11,
+    color: '#737686',
+  },
+  nearMePill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#e5eeff',
+    paddingLeft: 10,
+    paddingRight: 4,
+    paddingVertical: 2,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#c3c6d7',
+    gap: 4,
+  },
+  nearMeText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#004ac6',
   },
   searchBox: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 12,
     height: 42,
-    borderRadius: 10,
+    borderRadius: 12,
     borderWidth: 1,
+    borderColor: '#c3c6d7',
+    backgroundColor: '#ffffff',
     marginBottom: 10,
   },
   searchIcon: {
@@ -161,63 +274,114 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    fontSize: 14,
-    height: '100%',
+    fontSize: 13,
+    padding: 0,
   },
   typeScroll: {
     flexDirection: 'row',
   },
-  filterPill: {
+  typePill: {
     paddingHorizontal: 14,
     paddingVertical: 7,
-    borderRadius: 18,
+    borderRadius: 20,
     borderWidth: 1,
     marginRight: 8,
   },
-  filterPillText: {
+  typePillText: {
     fontSize: 12,
     fontWeight: '700',
   },
   scrollContent: {
     padding: 16,
-    paddingBottom: 32,
+    paddingBottom: 36,
   },
-  resultSummary: {
+  categoryRow: {
+    marginBottom: 14,
+  },
+  catPill: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+    borderWidth: 1,
+    marginRight: 8,
+  },
+  catPillText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  barterCallout: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 14,
+    backgroundColor: '#ffffff',
+    borderRadius: 14,
+    padding: 12,
+    marginBottom: 16,
+    borderWidth: 1.5,
+    borderColor: '#712ae2',
+    shadowColor: '#712ae2',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
+    elevation: 2,
+  },
+  barterCalloutLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+    marginRight: 8,
+  },
+  barterCalloutTitle: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#0b1c30',
+  },
+  barterCalloutSubtitle: {
+    fontSize: 11,
+    color: '#737686',
+    marginTop: 2,
+  },
+  barterCalloutBtn: {
+    backgroundColor: '#712ae2',
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    borderRadius: 14,
+  },
+  barterCalloutBtnText: {
+    color: '#ffffff',
+    fontSize: 11,
+    fontWeight: '800',
+  },
+  resultRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
   },
   resultCount: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '600',
   },
-  clearFilter: {
-    fontSize: 13,
-    fontWeight: '700',
+  nearMeActiveBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#d1f4e0',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 10,
+    gap: 4,
   },
-  productGrid: {
+  nearMeActiveText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#007d55',
+  },
+  grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
   },
-  gridItem: {
+  gridCol: {
     width: '48%',
-  },
-  emptyState: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 60,
-  },
-  emptyTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-    marginBottom: 6,
-  },
-  emptySubtitle: {
-    fontSize: 13,
-    textAlign: 'center',
-    maxWidth: 260,
-    lineHeight: 18,
   },
 })

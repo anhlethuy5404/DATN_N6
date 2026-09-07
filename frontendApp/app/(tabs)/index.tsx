@@ -4,14 +4,13 @@ import {
   Text,
   View,
   ScrollView,
-  TextInput,
   TouchableOpacity,
   SafeAreaView,
-  FlatList,
   StatusBar,
+  Image,
 } from 'react-native'
 import { useRouter } from 'expo-router'
-import { Ionicons } from '@expo/vector-icons'
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons'
 import { mockCategories, mockProducts, mockAuctions } from '../../mock/mockData'
 import { ProductCard } from '../../components/ProductCard'
 import { AuctionCard } from '../../components/AuctionCard'
@@ -23,81 +22,177 @@ export default function HomeScreen() {
   const colorScheme = useColorScheme()
   const theme = Colors[colorScheme ?? 'light']
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null)
+  const [biometricEnabled, setBiometricEnabled] = useState(false)
 
   const filteredProducts = selectedCategory
     ? mockProducts.filter((p) => p.categoryId === selectedCategory)
     : mockProducts
 
+  // AI smart suggestions matching TrangChủNexusExchangeMobile from Figma
+  const aiSuggestions = [
+    {
+      id: 1,
+      title: 'Đồng hồ cơ Thụy Sĩ cổ điển',
+      subtitle: 'Phù hợp với sở thích của bạn',
+      image: 'https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=500&q=80',
+      tag: 'AI MATCH 98%',
+      price: '18.500.000 đ',
+    },
+    {
+      id: 2,
+      title: 'Tiền xu cổ hiếm có 1945',
+      subtitle: 'Đang thu hút sự chú ý',
+      image: 'https://images.unsplash.com/photo-1621416894569-0f39ed31d247?w=500&q=80',
+      tag: 'TRENDING',
+      price: '3.200.000 đ',
+    },
+    {
+      id: 3,
+      title: 'Máy ảnh Mirrorless Vintage',
+      subtitle: 'Được AI định giá tốt',
+      image: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500&q=80',
+      tag: 'GOOD VALUE',
+      price: '12.800.000 đ',
+    },
+  ]
+
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
       <StatusBar barStyle={colorScheme === 'dark' ? 'light-content' : 'dark-content'} />
 
-      {/* Top App Bar */}
+      {/* Top App Bar matching Figma */}
       <View style={[styles.topBar, { backgroundColor: theme.card, borderBottomColor: theme.border }]}>
-        <View style={styles.brandRow}>
-          <View style={styles.brandContainer}>
-            <View style={styles.brandLogoBadge}>
-              <Text style={styles.brandLogoText}>M</Text>
-            </View>
-            <View>
-              <Text style={[styles.brandName, { color: theme.text }]}>MỘC</Text>
-              <Text style={[styles.brandTagline, { color: theme.textMuted }]}>
-                Đồ Cũ • Đấu Giá • Trao Đổi
-              </Text>
-            </View>
+        <View style={styles.headerRow}>
+          {/* Location / Safe Spot indicator */}
+          <TouchableOpacity
+            style={styles.locationBadge}
+            onPress={() => router.push('/safespot' as any)}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="location" size={16} color="#004ac6" />
+            <Text style={styles.locationText}>TP. Hồ Chí Minh</Text>
+            <Ionicons name="chevron-down" size={12} color="#434655" />
+          </TouchableOpacity>
+
+          {/* Brand Logo & Name */}
+          <View style={styles.brandTitleContainer}>
+            <Text style={styles.brandTitle}>Nexus Exchange</Text>
           </View>
 
+          {/* Actions: Wallet & Notification */}
           <View style={styles.topActions}>
             <TouchableOpacity
               style={[styles.iconButton, { backgroundColor: theme.primaryLight }]}
               onPress={() => router.push('/wallet' as any)}
             >
-              <Ionicons name="wallet-outline" size={20} color={theme.primary} />
+              <Ionicons name="wallet-outline" size={18} color={theme.primary} />
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.iconButton, { backgroundColor: theme.primaryLight }]}
               onPress={() => router.push('/notifications' as any)}
             >
-              <Ionicons name="notifications-outline" size={20} color={theme.primary} />
+              <Ionicons name="notifications-outline" size={18} color={theme.primary} />
               <View style={styles.badgeDot} />
             </TouchableOpacity>
           </View>
         </View>
 
-        {/* Search Input Button */}
+        {/* AI Search Bar from Figma */}
         <TouchableOpacity
-          activeOpacity={0.8}
-          style={[styles.searchBox, { backgroundColor: theme.background, borderColor: theme.border }]}
+          activeOpacity={0.88}
+          style={styles.aiSearchBar}
           onPress={() => router.push('/(tabs)/explore' as any)}
         >
-          <Ionicons name="search" size={18} color={theme.textMuted} style={styles.searchIcon} />
-          <Text style={[styles.searchPlaceholder, { color: theme.textMuted }]}>
-            Tìm máy ảnh, ghế vintage, đồng hồ cơ...
-          </Text>
+          <MaterialCommunityIcons name="creation" size={20} color="#712ae2" style={styles.aiIcon} />
+          <Text style={styles.aiSearchPlaceholder}>Tìm kiếm bằng AI hoặc từ khóa...</Text>
+          <TouchableOpacity
+            style={styles.cameraIconBtn}
+            onPress={() => router.push('/(tabs)/create' as any)}
+          >
+            <Ionicons name="camera-outline" size={18} color="#434655" />
+          </TouchableOpacity>
         </TouchableOpacity>
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-        {/* Banner Escrow Showcase */}
-        <View style={[styles.bannerCard, { backgroundColor: '#c5573e' }]}>
+        {/* Biometric Login Prompt from Figma */}
+        {!biometricEnabled && (
+          <View style={styles.biometricCard}>
+            <View style={styles.biometricLeft}>
+              <View style={styles.fingerprintBadge}>
+                <Ionicons name="finger-print" size={20} color="#ffffff" />
+              </View>
+              <View style={styles.biometricTextWrapper}>
+                <Text style={styles.biometricTitle}>Đăng nhập nhanh</Text>
+                <Text style={styles.biometricSubtitle}>Sử dụng sinh trắc học để bảo mật</Text>
+              </View>
+            </View>
+            <TouchableOpacity
+              style={styles.biometricAction}
+              onPress={() => setBiometricEnabled(true)}
+            >
+              <Text style={styles.biometricActionText}>Kích hoạt</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
+        {/* AI Suggestions Section from Figma */}
+        <View style={styles.sectionHeader}>
+          <View style={styles.aiHeaderRow}>
+            <MaterialCommunityIcons name="creation" size={18} color="#712ae2" style={{ marginRight: 6 }} />
+            <Text style={[styles.sectionTitle, { color: theme.text }]}>Gợi ý từ AI</Text>
+          </View>
+          <TouchableOpacity onPress={() => router.push('/(tabs)/explore' as any)}>
+            <Text style={[styles.seeAllText, { color: theme.secondary }]}>Khám phá thêm</Text>
+          </TouchableOpacity>
+        </View>
+
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.suggestionScroll}>
+          {aiSuggestions.map((item) => (
+            <TouchableOpacity
+              key={item.id}
+              style={styles.suggestionCard}
+              activeOpacity={0.9}
+              onPress={() => router.push('/(tabs)/explore' as any)}
+            >
+              <Image source={{ uri: item.image }} style={styles.suggestionImage} />
+              <View style={styles.suggestionTag}>
+                <Text style={styles.suggestionTagText}>{item.tag}</Text>
+              </View>
+              <View style={styles.suggestionInfo}>
+                <Text style={styles.suggestionItemTitle} numberOfLines={1}>
+                  {item.title}
+                </Text>
+                <Text style={styles.suggestionSubtitle} numberOfLines={1}>
+                  {item.subtitle}
+                </Text>
+                <Text style={styles.suggestionPrice}>{item.price}</Text>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+
+        {/* Safe Spot & Escrow Banner */}
+        <TouchableOpacity
+          activeOpacity={0.9}
+          style={styles.safeSpotBanner}
+          onPress={() => router.push('/safespot' as any)}
+        >
           <View style={styles.bannerBadge}>
-            <Ionicons name="shield-checkmark" size={14} color="#c5573e" />
+            <Ionicons name="shield-checkmark" size={14} color="#007d55" />
             <Text style={styles.bannerBadgeText}>GIAO DỊCH AN TÂM 100%</Text>
           </View>
           <Text style={styles.bannerTitle}>Ký Quỹ Escrow & Hẹn Gặp Safe Spot</Text>
           <Text style={styles.bannerSubtitle}>
-            Mộc giữ tiền thanh toán trung gian, quét mã QR nhận hàng tại điểm hẹn an toàn mới giải ngân cho người bán.
+            Nexus Exchange phong tỏa thanh toán, quét mã QR tại điểm hẹn camera 24/7 trước khi giải ngân.
           </Text>
-          <TouchableOpacity
-            style={styles.bannerAction}
-            onPress={() => router.push('/(tabs)/explore' as any)}
-          >
-            <Text style={styles.bannerActionText}>Khám phá ngay</Text>
-            <Ionicons name="arrow-forward" size={14} color="#c5573e" />
-          </TouchableOpacity>
-        </View>
+          <View style={styles.bannerAction}>
+            <Text style={styles.bannerActionText}>Xem điểm hẹn gần bạn</Text>
+            <Ionicons name="arrow-forward" size={14} color="#004ac6" />
+          </View>
+        </TouchableOpacity>
 
-        {/* Categories Bar */}
+        {/* Categories Pills */}
         <View style={styles.sectionHeader}>
           <Text style={[styles.sectionTitle, { color: theme.text }]}>Danh mục tuyển chọn</Text>
           {selectedCategory && (
@@ -118,8 +213,8 @@ export default function HomeScreen() {
                 style={[
                   styles.categoryPill,
                   {
-                    backgroundColor: isSelected ? theme.primary : theme.card,
-                    borderColor: isSelected ? theme.primary : theme.border,
+                    backgroundColor: isSelected ? '#004ac6' : theme.card,
+                    borderColor: isSelected ? '#004ac6' : theme.border,
                   },
                 ]}
               >
@@ -148,7 +243,7 @@ export default function HomeScreen() {
             <View style={styles.pulsingDot} />
             <Text style={[styles.sectionTitle, { color: theme.text }]}>Đấu giá trực tiếp</Text>
           </View>
-          <TouchableOpacity onPress={() => router.push('/(tabs)/explore' as any)}>
+          <TouchableOpacity onPress={() => router.push('/auction' as any)}>
             <Text style={[styles.seeAllText, { color: theme.primary }]}>Xem tất cả</Text>
           </TouchableOpacity>
         </View>
@@ -158,8 +253,8 @@ export default function HomeScreen() {
         ))}
 
         {/* Featured Products Grid */}
-        <View style={[styles.sectionHeader, { marginTop: 10 }]}>
-          <Text style={[styles.sectionTitle, { color: theme.text }]}>Đồ mới lên sàn</Text>
+        <View style={[styles.sectionHeader, { marginTop: 14 }]}>
+          <Text style={[styles.sectionTitle, { color: theme.text }]}>Sản phẩm lên sàn</Text>
           <Text style={[styles.productCount, { color: theme.textMuted }]}>
             {filteredProducts.length} món đồ
           </Text>
@@ -187,38 +282,34 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
     borderBottomWidth: 1,
   },
-  brandRow: {
+  headerRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 10,
   },
-  brandContainer: {
+  locationBadge: {
     flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: '#dce9ff',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    gap: 4,
   },
-  brandLogoBadge: {
-    width: 34,
-    height: 34,
-    borderRadius: 8,
-    backgroundColor: '#c5573e',
-    justifyContent: 'center',
+  locationText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#004ac6',
+  },
+  brandTitleContainer: {
     alignItems: 'center',
-    marginRight: 8,
   },
-  brandLogoText: {
-    color: '#ffffff',
-    fontSize: 20,
-    fontWeight: '900',
-  },
-  brandName: {
+  brandTitle: {
     fontSize: 18,
     fontWeight: '900',
-    letterSpacing: 1,
-  },
-  brandTagline: {
-    fontSize: 10,
-    fontWeight: '600',
+    color: '#004ac6',
+    letterSpacing: 0.5,
   },
   topActions: {
     flexDirection: 'row',
@@ -240,74 +331,83 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#c5573e',
+    backgroundColor: '#004ac6',
   },
-  searchBox: {
+  aiSearchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 12,
-    height: 42,
-    borderRadius: 10,
-    borderWidth: 1,
+    paddingHorizontal: 14,
+    height: 44,
+    borderRadius: 22,
+    borderWidth: 1.5,
+    borderColor: '#712ae2',
+    backgroundColor: '#e5eeff',
   },
-  searchIcon: {
+  aiIcon: {
     marginRight: 8,
   },
-  searchPlaceholder: {
+  aiSearchPlaceholder: {
+    flex: 1,
     fontSize: 13,
+    color: '#434655',
+  },
+  cameraIconBtn: {
+    padding: 4,
   },
   scrollContent: {
     padding: 16,
-    paddingBottom: 32,
+    paddingBottom: 36,
   },
-  bannerCard: {
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 20,
+  biometricCard: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#dce9ff',
+    borderRadius: 14,
+    padding: 12,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: '#c3c6d7',
   },
-  bannerBadge: {
+  biometricLeft: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#ffffff',
-    alignSelf: 'flex-start',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 6,
-    marginBottom: 8,
+    flex: 1,
   },
-  bannerBadgeText: {
-    color: '#c5573e',
-    fontSize: 10,
-    fontWeight: '800',
-    marginLeft: 4,
-  },
-  bannerTitle: {
-    color: '#ffffff',
-    fontSize: 17,
-    fontWeight: '800',
-    marginBottom: 6,
-    lineHeight: 22,
-  },
-  bannerSubtitle: {
-    color: '#faece8',
-    fontSize: 12,
-    lineHeight: 17,
-    marginBottom: 12,
-  },
-  bannerAction: {
-    flexDirection: 'row',
+  fingerprintBadge: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: '#004ac6',
+    justifyContent: 'center',
     alignItems: 'center',
+    marginRight: 10,
+  },
+  biometricTextWrapper: {
+    flex: 1,
+  },
+  biometricTitle: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#0b1c30',
+  },
+  biometricSubtitle: {
+    fontSize: 11,
+    color: '#434655',
+    marginTop: 2,
+  },
+  biometricAction: {
     backgroundColor: '#ffffff',
-    alignSelf: 'flex-start',
     paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: 8,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#004ac6',
   },
-  bannerActionText: {
-    color: '#c5573e',
+  biometricActionText: {
     fontSize: 12,
     fontWeight: '700',
-    marginRight: 4,
+    color: '#004ac6',
   },
   sectionHeader: {
     flexDirection: 'row',
@@ -315,16 +415,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 12,
   },
-  liveTitleWrapper: {
+  aiHeaderRow: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  pulsingDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#c5573e',
-    marginRight: 6,
   },
   sectionTitle: {
     fontSize: 17,
@@ -336,6 +429,124 @@ const styles = StyleSheet.create({
   },
   productCount: {
     fontSize: 12,
+  },
+  suggestionScroll: {
+    marginBottom: 20,
+  },
+  suggestionCard: {
+    width: 220,
+    backgroundColor: '#ffffff',
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: '#c3c6d7',
+    overflow: 'hidden',
+    marginRight: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  suggestionImage: {
+    width: '100%',
+    height: 110,
+    backgroundColor: '#ebe4d3',
+  },
+  suggestionTag: {
+    position: 'absolute',
+    top: 8,
+    left: 8,
+    backgroundColor: '#712ae2',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 4,
+  },
+  suggestionTagText: {
+    color: '#ffffff',
+    fontSize: 9,
+    fontWeight: '800',
+  },
+  suggestionInfo: {
+    padding: 10,
+  },
+  suggestionItemTitle: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#0b1c30',
+    marginBottom: 2,
+  },
+  suggestionSubtitle: {
+    fontSize: 11,
+    color: '#712ae2',
+    marginBottom: 4,
+  },
+  suggestionPrice: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: '#004ac6',
+  },
+  safeSpotBanner: {
+    backgroundColor: '#ffffff',
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 20,
+    borderWidth: 1.5,
+    borderColor: '#004ac6',
+    shadowColor: '#004ac6',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  bannerBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#d1f4e0',
+    alignSelf: 'flex-start',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+    marginBottom: 8,
+  },
+  bannerBadgeText: {
+    color: '#007d55',
+    fontSize: 10,
+    fontWeight: '800',
+    marginLeft: 4,
+  },
+  bannerTitle: {
+    color: '#0b1c30',
+    fontSize: 16,
+    fontWeight: '800',
+    marginBottom: 6,
+  },
+  bannerSubtitle: {
+    color: '#434655',
+    fontSize: 12,
+    lineHeight: 17,
+    marginBottom: 12,
+  },
+  bannerAction: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+  },
+  bannerActionText: {
+    color: '#004ac6',
+    fontSize: 12,
+    fontWeight: '700',
+    marginRight: 4,
+  },
+  liveTitleWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  pulsingDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#004ac6',
+    marginRight: 6,
   },
   categoryScroll: {
     marginBottom: 20,
