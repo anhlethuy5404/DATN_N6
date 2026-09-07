@@ -19,109 +19,181 @@ export default function WalletScreen() {
   const colorScheme = useColorScheme()
   const theme = Colors[colorScheme ?? 'light']
 
+  const [showBalance, setShowBalance] = useState(true)
   const [filterType, setFilterType] = useState<string>('ALL')
 
+  const totalNEX = 42500.00
+  const totalVND = mockWallet.balance + mockWallet.frozenBalance
+
   const handleDeposit = () => {
-    Alert.alert('Nạp tiền Ví Mộc', 'Chuyển hướng đến cổng thanh toán VNPAY QR Sandbox...')
+    Alert.alert('Nạp tiền Ví Nexus', 'Chuyển hướng đến cổng thanh toán VNPAY QR Sandbox...')
+  }
+
+  const handleSend = () => {
+    Alert.alert('Chuyển tiền P2P', 'Nhập mã người nhận hoặc quét QR Nexus Exchange để chuyển tiền tức thì.')
+  }
+
+  const handleReceive = () => {
+    Alert.alert('Nhận tiền', 'Mã QR nhận tiền ví Nexus của bạn đã sẵn sàng.')
+  }
+
+  const handleConvert = () => {
+    Alert.alert('Quy đổi NEX/VND', 'Tỷ giá: 1 NEX = 1,000 ₫. Phí chuyển đổi 0%.')
   }
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: '#F8F9FF' }]}>
       {/* Top Header */}
-      <View style={[styles.header, { backgroundColor: theme.card, borderBottomColor: theme.border }]}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-          <Ionicons name="arrow-back" size={24} color={theme.text} />
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => router.back()} style={styles.iconBtn}>
+          <Ionicons name="arrow-back" size={24} color="#0B1C30" />
         </TouchableOpacity>
-        <Text style={[styles.headerTitle, { color: theme.text }]}>Ví Điện Tử Mộc Escrow</Text>
-        <View style={{ width: 24 }} />
+        <Text style={styles.headerTitle}>NEX Wallet</Text>
+        <TouchableOpacity onPress={() => Alert.alert('Quét mã', 'Mở camera quét QR thanh toán')} style={styles.iconBtn}>
+          <Ionicons name="qr-code-outline" size={22} color="#0B1C30" />
+        </TouchableOpacity>
       </View>
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        {/* Balance Card */}
+        {/* Total Balance Card with Gradient / Nexus Deep Blue */}
         <View style={styles.walletCard}>
-          <Text style={styles.balanceTitle}>TỔNG SỐ DƯ TÀI KHOẢN</Text>
-          <Text style={styles.mainBalance}>
-            {formatVND(mockWallet.balance + mockWallet.frozenBalance)}
-          </Text>
+          <View style={styles.cardGlow1} />
+          <View style={styles.cardGlow2} />
+          
+          <View style={styles.cardTopRow}>
+            <View>
+              <Text style={styles.cardSubtitle}>Total Balance</Text>
+              <View style={styles.cardBalanceRow}>
+                <Text style={styles.currencyCode}>NEX</Text>
+                <Text style={styles.mainBalance}>
+                  {showBalance ? totalNEX.toLocaleString('en-US', { minimumFractionDigits: 2 }) : '••••••••'}
+                </Text>
+              </View>
+              <Text style={styles.cardVndSub}>
+                {showBalance ? `≈ ${formatVND(totalVND)}` : '••••••••'}
+              </Text>
+            </View>
 
-          <View style={styles.breakdownRow}>
-            <View style={styles.breakdownCol}>
-              <Text style={styles.breakdownLabel}>Khả dụng</Text>
-              <Text style={styles.breakdownVal}>{formatVND(mockWallet.balance)}</Text>
-            </View>
-            <View style={styles.breakdownCol}>
-              <Text style={styles.breakdownLabel}>Ký gửi Escrow</Text>
-              <Text style={styles.breakdownValFrozen}>{formatVND(mockWallet.frozenBalance)}</Text>
-            </View>
+            <TouchableOpacity 
+              style={styles.eyeBtn}
+              onPress={() => setShowBalance(!showBalance)}
+            >
+              <Ionicons 
+                name={showBalance ? "eye-outline" : "eye-off-outline"} 
+                size={20} 
+                color="#FFFFFF" 
+              />
+            </TouchableOpacity>
           </View>
 
-          <View style={styles.btnRow}>
-            <TouchableOpacity style={styles.depositBtn} onPress={handleDeposit}>
-              <Ionicons name="add-circle-outline" size={18} color="#ffffff" style={{ marginRight: 6 }} />
-              <Text style={styles.depositBtnText}>Nạp tiền VNPAY</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.withdrawBtn}
-              onPress={() => router.push('/wallet/withdraw' as any)}
-            >
-              <Ionicons name="arrow-up-circle-outline" size={18} color="#ffffff" style={{ marginRight: 6 }} />
-              <Text style={styles.withdrawBtnText}>Rút tiền về NH</Text>
-            </TouchableOpacity>
+          <View style={styles.cardBottomRow}>
+            <View style={styles.trendPill}>
+              <Ionicons name="trending-up" size={14} color="#6FFBBE" />
+              <Text style={styles.trendText}>+2.4% Today</Text>
+            </View>
+            <Text style={styles.cardMask}>**** 8492</Text>
+          </View>
+        </View>
+
+        {/* 4 Action Buttons: Top Up, Send, Receive, Convert */}
+        <View style={styles.actionsRow}>
+          <TouchableOpacity style={styles.actionItem} onPress={handleDeposit}>
+            <View style={styles.actionIconBox}>
+              <Ionicons name="add" size={22} color="#004AC6" />
+            </View>
+            <Text style={styles.actionLabel}>Top Up</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.actionItem} onPress={handleSend}>
+            <View style={styles.actionIconBox}>
+              <Ionicons name="arrow-up" size={20} color="#004AC6" />
+            </View>
+            <Text style={styles.actionLabel}>Send</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.actionItem} onPress={handleReceive}>
+            <View style={styles.actionIconBox}>
+              <Ionicons name="arrow-down" size={20} color="#004AC6" />
+            </View>
+            <Text style={styles.actionLabel}>Receive</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.actionItem} onPress={handleConvert}>
+            <View style={styles.actionIconBox}>
+              <Ionicons name="swap-horizontal" size={20} color="#004AC6" />
+              <View style={styles.actionBadgeDot} />
+            </View>
+            <Text style={styles.actionLabel}>Convert</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Breakdown Card */}
+        <View style={styles.breakdownCard}>
+          <View style={styles.breakdownCol}>
+            <Text style={styles.breakdownLabel}>Khả dụng (Available)</Text>
+            <Text style={styles.breakdownVal}>{formatVND(mockWallet.balance)}</Text>
+          </View>
+          <View style={styles.breakdownDivider} />
+          <View style={styles.breakdownCol}>
+            <Text style={styles.breakdownLabel}>Ký quỹ Escrow</Text>
+            <Text style={styles.breakdownValFrozen}>{formatVND(mockWallet.frozenBalance)}</Text>
           </View>
         </View>
 
         {/* Escrow Explanation */}
-        <View style={[styles.infoCard, { backgroundColor: '#eaf3ed' }]}>
-          <Ionicons name="shield-checkmark" size={20} color="#2f6844" />
+        <View style={styles.infoCard}>
+          <Ionicons name="shield-checkmark" size={20} color="#007D55" />
           <View style={{ flex: 1, marginLeft: 10 }}>
             <Text style={styles.infoTitle}>Quỹ Ký Gửi Bảo Vệ (Escrow Holding)</Text>
             <Text style={styles.infoDesc}>
-              Số tiền ký gửi tạm khóa trong ví nhằm đảm bảo người mua có trách nhiệm đến nhận hàng và người bán giao đúng món đồ như cam kết.
+              Số tiền ký quỹ được hợp đồng thông minh khóa an toàn nhằm bảo vệ giao dịch P2P & Đấu giá trên Nexus Exchange.
             </Text>
           </View>
         </View>
 
         {/* Transaction History Section */}
         <View style={styles.historyHeader}>
-          <Text style={[styles.sectionTitle, { color: theme.text }]}>Lịch sử biến động</Text>
+          <Text style={styles.sectionTitle}>Recent Activity</Text>
+          <TouchableOpacity onPress={() => router.push('/wallet/transactions' as any)}>
+            <Text style={styles.seeAllText}>See All</Text>
+          </TouchableOpacity>
         </View>
 
-        {mockWalletTransactions.map((tx) => (
-          <View
-            key={tx.id}
-            style={[styles.txCard, { backgroundColor: theme.card, borderColor: theme.border }]}
-          >
-            <View
-              style={[
-                styles.txIconBox,
-                { backgroundColor: tx.positive ? '#eaf3ed' : '#faece8' },
-              ]}
-            >
-              <Ionicons
-                name={tx.positive ? 'arrow-down' : 'arrow-up'}
-                size={18}
-                color={tx.positive ? '#2f6844' : '#c5573e'}
-              />
-            </View>
+        <View style={styles.txList}>
+          {mockWalletTransactions.map((tx) => (
+            <View key={tx.id} style={styles.txCard}>
+              <View
+                style={[
+                  styles.txIconBox,
+                  { backgroundColor: tx.positive ? '#EAF3ED' : '#DCE9FF' },
+                ]}
+              >
+                <Ionicons
+                  name={tx.positive ? 'arrow-down' : 'cart-outline'}
+                  size={18}
+                  color={tx.positive ? '#007D55' : '#004AC6'}
+                />
+              </View>
 
-            <View style={{ flex: 1, marginHorizontal: 10 }}>
-              <Text style={[styles.txDesc, { color: theme.text }]} numberOfLines={2}>
-                {tx.description}
-              </Text>
-              <Text style={[styles.txDate, { color: theme.textMuted }]}>{tx.createdAt}</Text>
-            </View>
+              <View style={styles.txInfo}>
+                <Text style={styles.txTitle}>{tx.description}</Text>
+                <Text style={styles.txSub}>{tx.vnpayTranNo || tx.type}</Text>
+              </View>
 
-            <Text
-              style={[
-                styles.txAmount,
-                { color: tx.positive ? '#2f6844' : '#c5573e' },
-              ]}
-            >
-              {tx.positive ? '+' : '-'}
-              {formatVND(tx.amount)}
-            </Text>
-          </View>
-        ))}
+              <View style={styles.txAmountCol}>
+                <Text
+                  style={[
+                    styles.txAmount,
+                    { color: tx.positive ? '#007D55' : '#0B1C30' },
+                  ]}
+                >
+                  {tx.positive ? '+' : '-'} {formatVND(tx.amount)}
+                </Text>
+                <Text style={styles.txDate}>{tx.createdAt}</Text>
+              </View>
+            </View>
+          ))}
+        </View>
       </ScrollView>
     </SafeAreaView>
   )
@@ -136,146 +208,269 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    height: 56,
+    backgroundColor: '#F8F9FF',
     borderBottomWidth: 1,
+    borderBottomColor: '#C3C6D7',
   },
-  backBtn: {
-    padding: 4,
+  iconBtn: {
+    padding: 6,
+    borderRadius: 20,
   },
   headerTitle: {
-    fontSize: 17,
-    fontWeight: '800',
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#004AC6',
   },
   content: {
     padding: 16,
-    paddingBottom: 32,
+    paddingBottom: 40,
   },
   walletCard: {
-    backgroundColor: '#292724',
-    borderRadius: 18,
-    padding: 20,
-    marginBottom: 16,
+    backgroundColor: '#004AC6',
+    borderRadius: 20,
+    padding: 22,
+    overflow: 'hidden',
+    position: 'relative',
+    shadowColor: '#004AC6',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.25,
+    shadowRadius: 12,
+    elevation: 6,
+    marginBottom: 20,
   },
-  balanceTitle: {
-    color: '#a8a296',
-    fontSize: 11,
-    fontWeight: '700',
-    letterSpacing: 1,
+  cardGlow1: {
+    position: 'absolute',
+    left: -24,
+    bottom: -24,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: 'rgba(255, 255, 255, 0.12)',
+  },
+  cardGlow2: {
+    position: 'absolute',
+    right: -30,
+    top: -30,
+    width: 130,
+    height: 130,
+    borderRadius: 65,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  cardTopRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 20,
+  },
+  cardSubtitle: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: 'rgba(255, 255, 255, 0.8)',
     marginBottom: 4,
   },
-  mainBalance: {
-    color: '#ffffff',
-    fontSize: 28,
-    fontWeight: '900',
-    marginBottom: 16,
-  },
-  breakdownRow: {
+  cardBalanceRow: {
     flexDirection: 'row',
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(230,222,203,0.2)',
-    paddingTop: 12,
+    alignItems: 'baseline',
+    gap: 8,
+  },
+  currencyCode: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: 'rgba(255, 255, 255, 0.9)',
+  },
+  mainBalance: {
+    fontSize: 34,
+    fontWeight: '800',
+    color: '#FFFFFF',
+    letterSpacing: -0.5,
+  },
+  cardVndSub: {
+    fontSize: 13,
+    color: 'rgba(255, 255, 255, 0.8)',
+    marginTop: 4,
+  },
+  eyeBtn: {
+    padding: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 20,
+  },
+  cardBottomRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  trendPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    borderRadius: 14,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  trendText: {
+    color: '#6FFBBE',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  cardMask: {
+    color: 'rgba(255, 255, 255, 0.75)',
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  actionsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 20,
+  },
+  actionItem: {
+    alignItems: 'center',
+    gap: 6,
+  },
+  actionIconBox: {
+    width: 54,
+    height: 54,
+    borderRadius: 27,
+    backgroundColor: '#DCE9FF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
+    shadowColor: '#004AC6',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  actionBadgeDot: {
+    position: 'absolute',
+    top: 4,
+    right: 4,
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: '#BA1A1A',
+    borderWidth: 2,
+    borderColor: '#F8F9FF',
+  },
+  actionLabel: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#434655',
+  },
+  breakdownCard: {
+    flexDirection: 'row',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 14,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#C3C6D7',
     marginBottom: 16,
   },
   breakdownCol: {
     flex: 1,
   },
   breakdownLabel: {
-    color: '#a8a296',
-    fontSize: 11,
-    marginBottom: 2,
+    fontSize: 12,
+    color: '#737686',
+    marginBottom: 4,
+    fontWeight: '500',
   },
   breakdownVal: {
-    color: '#ffffff',
     fontSize: 16,
-    fontWeight: '800',
+    fontWeight: '700',
+    color: '#0B1C30',
   },
   breakdownValFrozen: {
-    color: '#e07a63',
     fontSize: 16,
-    fontWeight: '800',
-  },
-  btnRow: {
-    flexDirection: 'row',
-  },
-  depositBtn: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#c5573e',
-    height: 42,
-    borderRadius: 10,
-    marginRight: 8,
-  },
-  depositBtnText: {
-    color: '#ffffff',
-    fontSize: 13,
     fontWeight: '700',
+    color: '#007D55',
   },
-  withdrawBtn: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(255,255,255,0.12)',
-    height: 42,
-    borderRadius: 10,
-  },
-  withdrawBtnText: {
-    color: '#ffffff',
-    fontSize: 13,
-    fontWeight: '700',
+  breakdownDivider: {
+    width: 1,
+    backgroundColor: '#C3C6D7',
+    marginHorizontal: 16,
   },
   infoCard: {
     flexDirection: 'row',
+    alignItems: 'flex-start',
+    backgroundColor: '#EAF3ED',
     padding: 14,
     borderRadius: 14,
-    alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#007D55' + '30',
   },
   infoTitle: {
-    color: '#2f6844',
-    fontSize: 13,
-    fontWeight: '800',
-    marginBottom: 2,
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#007D55',
+    marginBottom: 3,
   },
   infoDesc: {
-    color: '#2f6844',
-    fontSize: 11,
-    lineHeight: 16,
+    fontSize: 12,
+    color: '#34453A',
+    lineHeight: 18,
   },
   historyHeader: {
-    marginBottom: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
   },
   sectionTitle: {
-    fontSize: 16,
-    fontWeight: '800',
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#0B1C30',
+  },
+  seeAllText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#004AC6',
+  },
+  txList: {
+    gap: 10,
   },
   txCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 12,
-    borderRadius: 12,
+    backgroundColor: '#FFFFFF',
+    padding: 14,
+    borderRadius: 14,
     borderWidth: 1,
-    marginBottom: 8,
+    borderColor: '#C3C6D7',
   },
   txIconBox: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 42,
+    height: 42,
+    borderRadius: 21,
     justifyContent: 'center',
     alignItems: 'center',
+    marginRight: 12,
   },
-  txDesc: {
-    fontSize: 13,
+  txInfo: {
+    flex: 1,
+  },
+  txTitle: {
+    fontSize: 14,
     fontWeight: '600',
+    color: '#0B1C30',
+    marginBottom: 2,
+  },
+  txSub: {
+    fontSize: 12,
+    color: '#737686',
+  },
+  txAmountCol: {
+    alignItems: 'flex-end',
+  },
+  txAmount: {
+    fontSize: 15,
+    fontWeight: '700',
     marginBottom: 2,
   },
   txDate: {
     fontSize: 11,
-  },
-  txAmount: {
-    fontSize: 14,
-    fontWeight: '800',
+    color: '#737686',
   },
 })

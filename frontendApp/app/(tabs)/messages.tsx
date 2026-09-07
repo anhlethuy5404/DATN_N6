@@ -30,10 +30,10 @@ export default function MessagesScreen() {
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         {/* Safety Tip Banner */}
-        <View style={[styles.tipCard, { backgroundColor: '#faece8' }]}>
-          <Ionicons name="shield-checkmark" size={18} color="#c5573e" />
-          <Text style={styles.tipText}>
-            Luôn đàm phán và chốt giao dịch qua tin nhắn Mộc để được hỗ trợ giải quyết khiếu nại và cọc Escrow an toàn!
+        <View style={[styles.tipCard, { backgroundColor: '#dce9ff' }]}>
+          <Ionicons name="shield-checkmark" size={18} color="#004ac6" />
+          <Text style={[styles.tipText, { color: '#004ac6' }]}>
+            Luôn đàm phán và chốt giao dịch qua tin nhắn Nexus Exchange để được bảo vệ bằng Ký quỹ Escrow và điểm hẹn Safe Spot!
           </Text>
         </View>
 

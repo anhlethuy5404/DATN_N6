@@ -161,19 +161,41 @@ export default function ChatDetailScreen() {
               <Text style={[styles.bubbleText, { color: isMe ? '#ffffff' : theme.text }]}>
                 {m.content}
               </Text>
-              <Text style={[styles.bubbleTime, { color: isMe ? '#faece8' : theme.textMuted }]}>
+              <Text style={[styles.bubbleTime, { color: isMe ? '#dce9ff' : theme.textMuted }]}>
                 {m.createdAt}
               </Text>
             </View>
           )
         })}
+
+        {/* AI Safe Meetup Suggestion Banner from Figma NhắnTinGiaoDịchNexusExchangeMobile */}
+        <View style={styles.safeMeetupBanner}>
+          <View style={styles.safeMeetupLeft}>
+            <View style={styles.safeMeetupIconWrapper}>
+              <Ionicons name="shield-checkmark" size={18} color="#712ae2" />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.safeMeetupTitle}>Gợi ý điểm gặp an toàn</Text>
+              <Text style={styles.safeMeetupSubtitle}>
+                Trung tâm TrustBid Quận 1 (Cách 1.2 km, có camera 24/7 & nhân viên hỗ trợ).
+              </Text>
+            </View>
+          </View>
+          <TouchableOpacity
+            style={styles.safeMeetupBtn}
+            onPress={() => router.push('/safespot' as any)}
+          >
+            <Text style={styles.safeMeetupBtnText}>Xem điểm hẹn</Text>
+            <Ionicons name="arrow-forward" size={12} color="#ffffff" style={{ marginLeft: 4 }} />
+          </TouchableOpacity>
+        </View>
       </ScrollView>
 
       {/* Chat Input Bar */}
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <View style={[styles.inputBar, { backgroundColor: theme.card, borderTopColor: theme.border }]}>
           <TouchableOpacity style={styles.offerIconBtn} onPress={handleSendOffer}>
-            <Ionicons name="pricetag-outline" size={20} color={theme.primary} />
+            <Ionicons name="pricetag-outline" size={20} color="#004ac6" />
           </TouchableOpacity>
           <TextInput
             style={[styles.chatInput, { backgroundColor: theme.background, borderColor: theme.border, color: theme.text }]}
@@ -254,13 +276,13 @@ const styles = StyleSheet.create({
     fontWeight: '800',
   },
   buyNowBtn: {
-    backgroundColor: '#faece8',
+    backgroundColor: '#dce9ff',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 8,
   },
   buyNowBtnText: {
-    color: '#c5573e',
+    color: '#004ac6',
     fontSize: 12,
     fontWeight: '700',
   },
@@ -292,6 +314,55 @@ const styles = StyleSheet.create({
     marginTop: 4,
     alignSelf: 'flex-end',
   },
+  safeMeetupBanner: {
+    backgroundColor: '#f8f9ff',
+    borderRadius: 14,
+    borderWidth: 1.5,
+    borderColor: '#d2bbff',
+    padding: 12,
+    marginTop: 8,
+    marginBottom: 12,
+    gap: 8,
+  },
+  safeMeetupLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  safeMeetupIconWrapper: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: '#eedcff',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  safeMeetupTitle: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#0b1c30',
+  },
+  safeMeetupSubtitle: {
+    fontSize: 11,
+    color: '#737686',
+    marginTop: 2,
+    lineHeight: 15,
+  },
+  safeMeetupBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#712ae2',
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    alignSelf: 'flex-start',
+  },
+  safeMeetupBtnText: {
+    color: '#ffffff',
+    fontSize: 11,
+    fontWeight: '700',
+  },
   offerBubble: {
     width: '78%',
     padding: 14,
@@ -316,7 +387,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   offerStatusTag: {
-    backgroundColor: '#eaf3ed',
+    backgroundColor: '#d1f4e0',
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 6,
@@ -324,7 +395,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   offerStatusText: {
-    color: '#2f6844',
+    color: '#007d55',
     fontSize: 10,
     fontWeight: '800',
   },
@@ -339,7 +410,7 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 19,
-    backgroundColor: '#faece8',
+    backgroundColor: '#dce9ff',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 8,
@@ -357,7 +428,7 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 19,
-    backgroundColor: '#c5573e',
+    backgroundColor: '#004ac6',
     justifyContent: 'center',
     alignItems: 'center',
   },

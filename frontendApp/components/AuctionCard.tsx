@@ -148,13 +148,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   bidsPill: {
-    backgroundColor: '#faece8',
+    backgroundColor: '#dce9ff',
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 10,
   },
   bidsText: {
-    color: '#c5573e',
+    color: '#004ac6',
     fontSize: 11,
     fontWeight: '700',
   },
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: '#e6decb',
+    borderTopColor: '#c3c6d7',
     paddingTop: 10,
   },
   priceLabel: {
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
   bidButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#c5573e',
+    backgroundColor: '#004ac6',
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 10,

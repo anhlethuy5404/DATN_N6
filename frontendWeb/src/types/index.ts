@@ -59,6 +59,7 @@ export interface Category {
   name: string
   slug: string
   iconUrl?: string
+  iconName?: string
   status: 'ACTIVE' | 'INACTIVE'
   children?: string[]
 }

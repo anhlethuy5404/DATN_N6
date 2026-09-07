@@ -24,7 +24,13 @@ export default function DisputeListScreen() {
           <Ionicons name="arrow-back" size={24} color={theme.text} />
         </TouchableOpacity>
         <Text style={[styles.headerTitle, { color: theme.text }]}>Khiếu Nại & Tranh Chấp</Text>
-        <View style={{ width: 24 }} />
+        <TouchableOpacity
+          onPress={() => router.push('/dispute/create' as any)}
+          style={styles.addBtn}
+          activeOpacity={0.8}
+        >
+          <Ionicons name="add-circle" size={26} color={theme.primary} />
+        </TouchableOpacity>
       </View>
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
@@ -36,8 +42,10 @@ export default function DisputeListScreen() {
         </View>
 
         {mockDisputes.map((d) => (
-          <View
+          <TouchableOpacity
             key={d.id}
+            activeOpacity={0.7}
+            onPress={() => router.push(`/dispute/${d.id}` as any)}
             style={[styles.disputeCard, { backgroundColor: theme.card, borderColor: theme.border }]}
           >
             <View style={styles.cardTop}>
@@ -61,12 +69,27 @@ export default function DisputeListScreen() {
               </View>
             )}
 
-            <View style={styles.dateRow}>
-              <Ionicons name="calendar-outline" size={12} color={theme.textMuted} />
-              <Text style={[styles.dateText, { color: theme.textMuted }]}>Ngày tạo: {d.createdAt}</Text>
+            <View style={styles.cardFooter}>
+              <View style={styles.dateRow}>
+                <Ionicons name="calendar-outline" size={12} color={theme.textMuted} />
+                <Text style={[styles.dateText, { color: theme.textMuted }]}>Ngày tạo: {d.createdAt}</Text>
+              </View>
+              <View style={styles.viewDetailRow}>
+                <Text style={[styles.viewDetailText, { color: theme.primary }]}>Chi tiết</Text>
+                <Ionicons name="chevron-forward" size={14} color={theme.primary} />
+              </View>
             </View>
-          </View>
+          </TouchableOpacity>
         ))}
+
+        <TouchableOpacity
+          style={[styles.createDisputeBtn, { borderColor: theme.primary }]}
+          onPress={() => router.push('/dispute/create' as any)}
+          activeOpacity={0.8}
+        >
+          <Ionicons name="alert-circle-outline" size={18} color={theme.primary} />
+          <Text style={[styles.createDisputeText, { color: theme.primary }]}>Gửi yêu cầu khiếu nại mới</Text>
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   )
@@ -167,5 +190,41 @@ const styles = StyleSheet.create({
   dateText: {
     fontSize: 11,
     marginLeft: 4,
+  },
+  addBtn: {
+    padding: 2,
+  },
+  cardFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 4,
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: '#f0f0f5',
+  },
+  viewDetailRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 2,
+  },
+  viewDetailText: {
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  createDisputeBtn: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 13,
+    borderRadius: 12,
+    borderWidth: 1.5,
+    borderStyle: 'dashed',
+    marginTop: 8,
+    gap: 8,
+  },
+  createDisputeText: {
+    fontSize: 13,
+    fontWeight: '700',
   },
 })

@@ -41,7 +41,7 @@ export default function OrderDetailScreen() {
   }
 
   const handleOpenDispute = () => {
-    router.push('/dispute/create' as any)
+    router.push(`/dispute/create?orderId=${order.id}&orderCode=${order.orderCode}` as any)
   }
 
   return (
@@ -62,7 +62,11 @@ export default function OrderDetailScreen() {
         <EscrowTimeline status={order.status} isDirectMeetup={order.isDirectMeetup} />
 
         {/* Product Card */}
-        <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.border }]}>
+        <TouchableOpacity
+          activeOpacity={0.85}
+          onPress={() => router.push(`/product/${order.productId}` as any)}
+          style={[styles.card, { backgroundColor: theme.card, borderColor: theme.border }]}
+        >
           <View style={styles.productRow}>
             <Image source={{ uri: order.productImage }} style={styles.productImage} />
             <View style={{ flex: 1, marginLeft: 12 }}>
@@ -76,8 +80,9 @@ export default function OrderDetailScreen() {
                 {formatVND(order.totalAmount)}
               </Text>
             </View>
+            <Ionicons name="chevron-forward" size={16} color={theme.textMuted} />
           </View>
-        </View>
+        </TouchableOpacity>
 
         {/* QR Code & Safe PIN Physical Handoff Verification */}
         <View style={[styles.qrCard, { backgroundColor: theme.card, borderColor: theme.border }]}>

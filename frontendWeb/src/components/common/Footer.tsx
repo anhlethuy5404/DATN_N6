@@ -1,58 +1,84 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { ShieldCheck, Heart } from 'lucide-react'
+import { ShieldCheck, Sparkles, Shield, Lock, MapPin } from 'lucide-react'
 
 export const Footer: React.FC = () => {
   return (
-    <footer>
-      <div className="footer-top">
-        <div>
-          <Link to="/" className="brand footer-brand">
-            <span className="brand-mark">m</span>
-            <span>mộc</span>
-          </Link>
-          <p>
-            Đồ cũ, chuyện mới.
-            <br />
-            Nền tảng giao dịch, đấu giá và trao đổi đồ đã qua sử dụng
-            <br />
-            với cơ chế ký quỹ VNPAY Escrow bảo vệ người dùng.
-          </p>
+    <footer className="bg-[#0B1C30] text-slate-300 pt-16 pb-12 border-t border-slate-800">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-slate-800">
+          {/* Brand Col */}
+          <div className="lg:col-span-2 space-y-4">
+            <Link to="/" className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#004AC6] to-[#712AE2] flex items-center justify-center">
+                <Sparkles className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-2xl font-black text-white tracking-tight">
+                Nexus <span className="text-[#6FFBBE]">Exchange</span>
+              </span>
+            </Link>
+            <p className="text-sm text-slate-400 max-w-sm leading-relaxed">
+              Vietnam's premier decentralized marketplace and auction platform for authentic collectibles, vintage tech, and rare items with smart escrow security and physical safe spot verification.
+            </p>
+            <div className="flex items-center gap-4 text-xs text-slate-400">
+              <div className="flex items-center gap-1.5">
+                <Lock size={14} className="text-[#6FFBBE]" />
+                <span>256-bit Encrypted</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <Shield size={14} className="text-[#004AC6]" />
+                <span>eKYC Verified</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <MapPin size={14} className="text-[#712AE2]" />
+                <span>Safe Spot Network</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Marketplace Col */}
+          <div>
+            <h4 className="text-sm font-bold text-white uppercase tracking-wider mb-4">Marketplace</h4>
+            <ul className="space-y-2.5 text-xs text-slate-400">
+              <li><Link to="/products" className="hover:text-white transition-colors">Catalog & Browse</Link></li>
+              <li><Link to="/auctions" className="hover:text-white transition-colors">Live Auctions</Link></li>
+              <li><Link to="/pass" className="hover:text-white transition-colors">Barter & Exchange</Link></li>
+              <li><Link to="/wallet" className="hover:text-white transition-colors">NEX Digital Wallet</Link></li>
+              <li><Link to="/products/create" className="hover:text-white transition-colors">Sell an Item</Link></li>
+            </ul>
+          </div>
+
+          {/* Trust & Escrow Col */}
+          <div>
+            <h4 className="text-sm font-bold text-white uppercase tracking-wider mb-4">Trust & Safety</h4>
+            <ul className="space-y-2.5 text-xs text-slate-400">
+              <li><Link to="/orders" className="hover:text-white transition-colors">Smart Escrow Process</Link></li>
+              <li><Link to="/verification" className="hover:text-white transition-colors">Identity Verification (eKYC)</Link></li>
+              <li><Link to="/disputes" className="hover:text-white transition-colors">Dispute Resolution</Link></li>
+              <li><Link to="/moderator" className="hover:text-white transition-colors">Moderator Hub</Link></li>
+            </ul>
+          </div>
+
+          {/* Portals Col */}
+          <div>
+            <h4 className="text-sm font-bold text-white uppercase tracking-wider mb-4">Portals</h4>
+            <ul className="space-y-2.5 text-xs text-slate-400">
+              <li><Link to="/dashboard" className="hover:text-white transition-colors">User Dashboard</Link></li>
+              <li><Link to="/admin" className="hover:text-white transition-colors">Admin Management</Link></li>
+              <li><Link to="/auth/login" className="hover:text-white transition-colors">Sign In</Link></li>
+              <li><Link to="/auth/register" className="hover:text-white transition-colors">Create Account</Link></li>
+            </ul>
+          </div>
         </div>
 
-        <div className="footer-links">
-          <div>
-            <strong>Khám phá</strong>
-            <Link to="/products">Mới lên kệ</Link>
-            <Link to="/auctions">Phiên đấu giá</Link>
-            <Link to="/pass">Trao đổi & Cho tặng</Link>
-            <Link to="/wallet">Ví điện tử</Link>
-          </div>
-
-          <div>
-            <strong>Về Mộc</strong>
-            <Link to="/orders">Quy trình ký quỹ Escrow</Link>
-            <Link to="/verification">Xác minh danh tính eKYC</Link>
-            <Link to="/disputes">Giải quyết tranh chấp</Link>
-            <Link to="/moderator">Trung tâm kiểm duyệt</Link>
-          </div>
-
-          <div>
-            <strong>Quản trị & Hệ thống</strong>
-            <Link to="/dashboard">Không gian cá nhân</Link>
-            <Link to="/admin">Cổng quản trị viên</Link>
-            <Link to="/products/create">Đăng bán sản phẩm</Link>
+        {/* Bottom copyright row */}
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+          <p>© 2026 Nexus Exchange Inc. All rights reserved. Graduation Thesis Project.</p>
+          <div className="flex items-center gap-2">
+            <ShieldCheck size={14} className="text-[#6FFBBE]" />
+            <span>Escrow Protected & VNPAY Sandbox Integrated</span>
           </div>
         </div>
-      </div>
-
-      <div className="footer-bottom">
-        <span>
-          © 2026 Mộc Marketplace · Đồ án tốt nghiệp hệ thống giao dịch đa phương thức.
-        </span>
-        <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <ShieldCheck size={14} color="#356b41" /> Escrow Protected · Hà Nội, Việt Nam <Heart size={13} color="#c5573e" />
-        </span>
       </div>
     </footer>
   )
